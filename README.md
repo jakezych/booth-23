@@ -12,3 +12,5 @@
 * interact button
 * chasing demagorgon
   * faster and faster as the levels progress
+  * parallel of candle for demagorgon, glowing red eyes around it
+  * teleports closer and closer to the player
