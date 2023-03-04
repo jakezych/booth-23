@@ -1,9 +1,9 @@
 import pygame
 
-WIDTH = 256    
-HEIGHT = 256
-FPS = 8
-GRIDSIZE = 16
+WIDTH = 512    
+HEIGHT = 512
+FPS = 4
+GRIDSIZE = 32
 
 BLACK = (0,0,0)
 RED = (255,0,0)
