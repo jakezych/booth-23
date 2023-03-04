@@ -1,4 +1,5 @@
 import pygame
+from enum import Enum
 
 WIDTH = 640    
 HEIGHT = 640
@@ -11,4 +12,10 @@ GREEN = (0,255,0)
 BLUE = (0,0,255)
 WHITE = (255,255,255)
 
+obstacles = pygame.sprite.Group()
 
+class Direction(Enum):
+  UP = 1
+  RIGHT = 2
+  LEFT = 3
+  DOWN = 4

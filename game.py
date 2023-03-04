@@ -1,9 +1,24 @@
 import pygame 
 import sys
-import constants
+from constants import *
 import sprites
 import tilemap
 
+<<<<<<< Updated upstream
+=======
+clock = pygame.time.Clock()
+
+
+obstacles.empty()
+
+map = tilemap.TiledMap("data/level1.tmx")
+
+for tile_object in map.tmxdata.objects:
+    if tile_object.name == 'player':
+        player = sprites.Player(tile_object.x, tile_object.y,16,16)
+    else:
+        _ = sprites.Obstacle(tile_object.x, tile_object.y, 16, 16)
+>>>>>>> Stashed changes
 
 def main():
   clock = pygame.time.Clock()
