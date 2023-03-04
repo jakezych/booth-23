@@ -19,6 +19,5 @@ class TiledMap:
 
     def make_map(self):
         temp_surface = pygame.Surface((self.width, self.height))
-    #    temp_surface = pygame.Surface((self.width, self.height),pygame.SRCALPHA)
         self.render(temp_surface)
         return temp_surface
