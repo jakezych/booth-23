@@ -1,7 +1,7 @@
 import pygame
 
-WIDTH = 512    
-HEIGHT = 512
+WIDTH = 640    
+HEIGHT = 640
 FPS = 4
 GRIDSIZE = 32
 
