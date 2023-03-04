@@ -1,5 +1,6 @@
 import pygame
 import constants
+import helpers
 
 class Player(pygame.sprite.Sprite):
   def __init__(self, color, width, height):
@@ -9,15 +10,16 @@ class Player(pygame.sprite.Sprite):
     self.width = width
     self.height = height
 
-    self.image = pygame.Surface([width, height])
-    self.image.fill(color)
+    self.load_sprites("data/booth23sprite_white.png")
     self.rect = self.image.get_rect()
 
     self.grid_x = 0 
     self.grid_y = 0
 
-    pygame.draw.rect(self.image, color, [self.grid_x, self.grid_y, width, height])
-
+  def load_sprites(self, filename):
+    ss = helpers.spritesheet(filename, )
+    idle = ss.image_at((0, 0, 16, 16), colorkey = -1)
+    self.image = idle
 
   def update(self):
     self.keys()
