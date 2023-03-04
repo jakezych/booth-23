@@ -1,1 +1,7 @@
-# booth-23
+# booth-
+
+## todo
+* starting screen
+* flashlight
+* secrets
+* interact button
