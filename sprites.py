@@ -25,10 +25,10 @@ class Player(pygame.sprite.Sprite):
   def keys(self):
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
-      self.grid_y += -16
+      self.grid_y += -constants.GRIDSIZE
     elif keys[pygame.K_a]:
-      self.grid_x += -16
+      self.grid_x += -constants.GRIDSIZE
     elif keys[pygame.K_s]:
-      self.grid_y += 16
+      self.grid_y += constants.GRIDSIZE
     elif keys[pygame.K_d]:
-      self.grid_x += 16
+      self.grid_x += constants.GRIDSIZE
