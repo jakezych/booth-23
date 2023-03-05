@@ -2,9 +2,9 @@ from enum import Enum
 import pygame
 
 
-WIDTH = 640    
-HEIGHT = 640
-FPS = 6
+WIDTH = 320
+HEIGHT = 320
+FPS = 32
 GRIDSIZE = 16
 
 BLACK = (0,0,0)
