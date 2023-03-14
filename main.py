@@ -5,11 +5,10 @@ import constants
 import sprites
 import tilemap
 
-def load_map(map: tilemap.TiledMap):  
+def load_map(map: tilemap.TiledMap) -> sprites.Player:  
   player = None
   for obj in map.tmxdata.objects:
     if obj.name == 'player_spawn':
-      print(obj.x, obj.y)
       player = sprites.Player(None, 0,0, obj.x, obj.y)
     if obj.name == 'player_collide':
       ob = sprites.Obstacle(obj.x, obj.y, obj.width, obj.height)
