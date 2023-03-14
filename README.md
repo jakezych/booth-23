@@ -1,6 +1,14 @@
 # booth-23
 
 ## todo
+
+### gameplay
+* HIGH PRIORITY
+* fix collision code, need some way to get around friction issue
+
+* actual gameplay
+* counting down timer
+
 * starting screen
 * flashlight
   * spotlight on top of player
