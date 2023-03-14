@@ -7,7 +7,7 @@ from typing import Tuple
 def is_colliding(points : list[(int,int)], tiles : pygame.sprite.Group) -> bool:
     for tile in tiles:
         for point in points:
-            if tile.rect.collidepoint(point):
+            if point != None and tile.rect.collidepoint(point):
                 return True
     return False
 
@@ -47,14 +47,14 @@ class Player(pygame.sprite.Sprite):
 
     def test_collision(self, direction: Direction, new_x :int, new_y:int, tiles : pygame.sprite.Group) -> bool:
         if direction == direction.UP:
-            p1, p2, p3 = (new_x, new_y), (new_x+GRIDSIZE, new_y), (new_x+GRIDSIZE/2, new_y)
+            p1, p2 = (new_x, new_y), (new_x+GRIDSIZE/2, new_y)
         elif direction == direction.DOWN:
-            p1, p2, p3 =(new_x, new_y+GRIDSIZE), (new_x+GRIDSIZE, new_y+GRIDSIZE), (new_x+GRIDSIZE/2, new_y+GRIDSIZE)
+            p1, p2 =(new_x, new_y+GRIDSIZE), (new_x+GRIDSIZE/2, new_y+GRIDSIZE)
         elif direction == direction.LEFT:
-            p1, p2, p3 = (new_x, new_y), (new_x, new_y+GRIDSIZE), (new_x, new_y+GRIDSIZE/2)
+            p1, p2 = (new_x, new_y), (new_x, new_y+GRIDSIZE/2)
         elif direction == direction.RIGHT:
-            p1, p2, p3 = (new_x+GRIDSIZE, new_y), (new_x+GRIDSIZE, new_y+GRIDSIZE), (new_x+GRIDSIZE/2, new_y+GRIDSIZE)
-        collision = is_colliding([p1, p2, p3], tiles)
+            p1, p2 = (new_x+GRIDSIZE, new_y), (new_x+GRIDSIZE/2, new_y)
+        collision = is_colliding([p1, p2], tiles)
         return collision
 
     def keys(self) -> None:
