@@ -4,7 +4,7 @@ import pygame
 
 WIDTH = 320
 HEIGHT = 320
-FPS = 24
+FPS = 48
 GRIDSIZE = 16
 SCREEN_SCALING_FACTOR = 3
 
@@ -17,6 +17,7 @@ WHITE = (255, 255, 255)
 obstacles = pygame.sprite.Group()
 
 DEATH_EVENT = pygame.event.custom_type()
+ANIM_SPEED = 3
 
 
 class Direction(Enum):
