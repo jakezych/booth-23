@@ -5,6 +5,7 @@ import constants
 import sprites
 import tilemap
 
+
 def load_map(map: tilemap.TiledMap) -> sprites.Player:  
   player = None
   for obj in map.tmxdata.objects:
@@ -17,7 +18,6 @@ def load_map(map: tilemap.TiledMap) -> sprites.Player:
   return player
 
 def main():
-
   clock = pygame.time.Clock()
   start_time = pygame.time.get_ticks() 
   pygame.init()
@@ -26,6 +26,12 @@ def main():
   
   light=pygame.image.load('data/spotlights/spotlight1.png')
   filter = pygame.surface.Surface(size)
+
+
+  title = pygame.image.load('data/sprites/title.png')
+  
+
+
 
   win = pygame.Surface(size)
   screen = pygame.display.set_mode((width*constants.SCREEN_SCALING_FACTOR, height*constants.SCREEN_SCALING_FACTOR))
@@ -73,6 +79,8 @@ def main():
     win.blit(player.image,camera.apply(player))
     win.blit(map_img_top, camera.apply_rect(map_rect))
     win.blit(filter, (0, 0), special_flags=pygame.BLEND_RGBA_SUB)
+    if player.title_screen:
+      win.blit(title, (77,50))
 
     # Scale the window to the screen size 
     scaled_win = pygame.transform.scale(win, screen.get_size())
