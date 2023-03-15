@@ -4,7 +4,9 @@ import helpers
 from typing import Tuple
 
 # Returns true if any point in points is colliding with any tile
-def is_colliding(points : list[(int,int)], tiles : pygame.sprite.Group) -> int:
+
+
+def is_colliding(points: list[(int, int)], tiles: pygame.sprite.Group) -> int:
     for tile in tiles:
         for point in points:
             if point != None and tile.rect.collidepoint(point):
@@ -13,8 +15,9 @@ def is_colliding(points : list[(int,int)], tiles : pygame.sprite.Group) -> int:
                 return 1
     return 0
 
+
 class Player(pygame.sprite.Sprite):
-    def __init__(self, color:Tuple[int,int,int], width:int, height:int, start_x:int, start_y:int) -> None:
+    def __init__(self, color: Tuple[int, int, int], width: int, height: int, start_x: int, start_y: int) -> None:
         pygame.sprite.Sprite.__init__(self)
         # Set basic properties
         self.color = color
@@ -34,14 +37,18 @@ class Player(pygame.sprite.Sprite):
         self.rect.topleft = (self.grid_x, self.grid_y)
         self.title_screen = True
 
-    def load_sprites(self, filename : str= "data/sprites/booth23sprite_white.png") -> None:
+    def load_sprites(self, filename: str = "data/sprites/booth23sprite_white.png") -> None:
         ss = helpers.spritesheet(filename, )
-        idle = ss.image_at((0, 0, 16, 16), colorkey = -1)
+        idle = ss.image_at((0, 0, 16, 16), colorkey=-1)
         self.images = {}
-        self.images[Direction.DOWN] = ss.images_at([(0, 0, 16, 16),(16,0,16,16), (32, 0,16,16)], colorkey = -1)
-        self.images[Direction.UP] = ss.images_at([(112,0,16,16), (96,0,16,16), (0,16,16,16)], colorkey=-1)
-        self.images[Direction.RIGHT] = ss.images_at([(48, 0,16,16), (64,0,16,16), (80,0,16,16)], colorkey=-1)
-        self.images[Direction.LEFT] = ss.images_at([(48, 16,16,16), (64,16,16,16), (80,16,16,16)], colorkey=-1)
+        self.images[Direction.DOWN] = ss.images_at(
+            [(0, 0, 16, 16), (16, 0, 16, 16), (32, 0, 16, 16)], colorkey=-1)
+        self.images[Direction.UP] = ss.images_at(
+            [(112, 0, 16, 16), (96, 0, 16, 16), (0, 16, 16, 16)], colorkey=-1)
+        self.images[Direction.RIGHT] = ss.images_at(
+            [(48, 0, 16, 16), (64, 0, 16, 16), (80, 0, 16, 16)], colorkey=-1)
+        self.images[Direction.LEFT] = ss.images_at(
+            [(48, 16, 16, 16), (64, 16, 16, 16), (80, 16, 16, 16)], colorkey=-1)
         #self.images[Direction.LEFT] = [pygame.transform.flip(x, flip_x=True, flip_y=False) for x in ss.images_at([(48, 0,16,16), (64,0,16,16), (80,0,16,16)], colorkey=-1)]
         self.image = self.images[Direction.DOWN][self.anim_step]
 
@@ -50,18 +57,19 @@ class Player(pygame.sprite.Sprite):
         self.rect.topleft = (self.grid_x, self.grid_y)
         self.keys()
 
-    def test_collision(self, direction: Direction, new_x :int, new_y:int, tiles : pygame.sprite.Group) -> int:
+    def test_collision(self, direction: Direction, new_x: int, new_y: int, tiles: pygame.sprite.Group) -> int:
         if direction == direction.UP:
             p1, p2 = (new_x, new_y), (new_x+GRIDSIZE/2, new_y)
         elif direction == direction.DOWN:
-            p1, p2 =(new_x, new_y+GRIDSIZE), (new_x+GRIDSIZE/2, new_y+GRIDSIZE)
+            p1, p2 = (new_x, new_y+GRIDSIZE), (new_x +
+                                               GRIDSIZE/2, new_y+GRIDSIZE)
         elif direction == direction.LEFT:
             p1, p2 = (new_x, new_y), (new_x, new_y+GRIDSIZE/2)
         elif direction == direction.RIGHT:
             p1, p2 = (new_x+GRIDSIZE, new_y), (new_x+GRIDSIZE/2, new_y)
         collision = is_colliding([p1, p2], tiles)
         return collision
-    
+
     def movement(self, direction):
         death_event = pygame.event.Event(DEATH_EVENT)
         self.title_screen = False
@@ -122,24 +130,28 @@ class Player(pygame.sprite.Sprite):
             self.movement(Direction.DOWN)
         elif keys[pygame.K_d]:
             self.movement(Direction.RIGHT)
+
+
 class Demogorgon(pygame.sprite.Sprite):
-    def __init__(self, x:int, y:int) -> None:
+    def __init__(self, x: int, y: int) -> None:
         pygame.sprite.Sprite.__init__(self)
         ss = helpers.spritesheet("data/sprites/demagorgon.png", )
-        stand = ss.image_at((0, 0, 32, 64), colorkey = -1)
+        stand = ss.image_at((0, 0, 32, 64), colorkey=-1)
         self.x = x
         self.y = y
         self.image = stand
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x, self.y)
+
     def update(self) -> None:
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x, self.y)
 
+
 class Obstacle(pygame.sprite.Sprite):
-    def __init__(self,x:int,y:int,w:int,h:int, danger:bool) -> None:
+    def __init__(self, x: int, y: int, w: int, h: int, danger: bool) -> None:
         pygame.sprite.Sprite.__init__(self, obstacles)
-        self.rect = pygame.Rect(x,y,w,h)
-        self.rect.x = x 
+        self.rect = pygame.Rect(x, y, w, h)
+        self.rect.x = x
         self.rect.y = y
         self.danger = danger
