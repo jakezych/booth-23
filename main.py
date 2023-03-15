@@ -9,14 +9,17 @@ def load_map(map: tilemap.TiledMap) -> sprites.Player:
   player = None
   for obj in map.tmxdata.objects:
     if obj.name == 'player_spawn':
-      player = sprites.Player(None, 0,0, obj.x, obj.y)
+      player = sprites.Player(None, obj.x,obj.y, obj.x, obj.y)
     if obj.name == 'player_collide':
-      ob = sprites.Obstacle(obj.x, obj.y, obj.width, obj.height)
+      ob = sprites.Obstacle(obj.x, obj.y, obj.width, obj.height, False)
+    if obj.name == 'death_collide':
+      d = sprites.Obstacle(obj.x, obj.y, obj.width, obj.height, True)
   return player
 
 def main():
 
   clock = pygame.time.Clock()
+  start_time = pygame.time.get_ticks() 
   pygame.init()
   pygame.display.set_caption('PDT Booth23')
   size = width, height = constants.WIDTH, constants.HEIGHT
@@ -36,9 +39,20 @@ def main():
   active_map = title_map
 
   while True:
-    for event in pygame.event.get():
+    #counting_time = pygame.time.get_ticks() - start_time
+    #counting_seconds = str((counting_time%60000)//1000 )
+    #print(counting_seconds)
+
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT: 
           sys.exit()
+        elif event.type == constants.DEATH_EVENT:
+          player.grid_x = player.spawn_x
+          player.grid_y = player.spawn_y
+          player.dir = constants.Direction.UP
+          player.anim_step = 0
+
     
     player.update()
     camera.update(player)
