@@ -1,6 +1,6 @@
 from typing import Tuple
 import pygame
-from constants import Direction, GRIDSIZE, obstacles, DEATH_EVENT
+from constants import Direction, GRIDSIZE, obstacles, DEATH_EVENT, ANIM_SPEED
 import helpers
 
 # Returns true if any point in points is colliding with any tile
@@ -25,7 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.height = height
         self.spawn_x = start_x
         self.spawn_y = start_y
-        self.step_size = GRIDSIZE//4
+        self.step_size = GRIDSIZE//8
         # Set starting conditions
         self.grid_x = start_x
         self.grid_y = start_y
@@ -76,48 +76,45 @@ class Player(pygame.sprite.Sprite):
             case Direction.UP:
                 match self.test_collision(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):
                     case 2:
-                        print("triggered collide")
                         s = pygame.event.post(death_event)
                     case 1:
                         pass
                     case 0:
                         self.grid_y += -self.step_size
-                        self.anim_step = (self.anim_step + 1) % 3
+                        self.anim_step += 1
                 self.dir = Direction.UP
             case Direction.LEFT:
                 match self.test_collision(Direction.LEFT, self.grid_x-self.step_size, self.grid_y, obstacles):
                     case 2:
-                        print("triggered collide")
                         s = pygame.event.post(death_event)
                     case 1:
                         pass
                     case 0:
                         self.grid_x += -self.step_size
-                        self.anim_step = (self.anim_step + 1) % 3
+                        self.anim_step += 1
                 self.dir = Direction.LEFT
             case Direction.DOWN:
                 match self.test_collision(Direction.DOWN, self.grid_x, self.grid_y, obstacles):
                     case 2:
-                        print("triggered collide")
                         s = pygame.event.post(death_event)
                     case 1:
                         pass
                     case 0:
                         self.grid_y += self.step_size
-                        self.anim_step = (self.anim_step + 1) % 3
+                        self.anim_step += 1
                 self.dir = Direction.DOWN
             case Direction.RIGHT:
                 match self.test_collision(Direction.RIGHT, self.grid_x, self.grid_y, obstacles):
                     case 2:
-                        print("triggered collide")
                         s = pygame.event.post(death_event)
                     case 1:
                         pass
                     case 0:
                         self.grid_x += self.step_size
-                        self.anim_step = (self.anim_step + 1) % 3
+                        self.anim_step = (self.anim_step + 1)
                 self.dir = Direction.RIGHT
-        self.image = self.images[self.dir][self.anim_step]
+        print(self.anim_step)
+        self.image = self.images[self.dir][(self.anim_step//ANIM_SPEED) % 3]
 
     def keys(self) -> None:
         keys = pygame.key.get_pressed()
