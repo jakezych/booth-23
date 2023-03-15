@@ -1,15 +1,17 @@
 import pygame
-from constants import Direction, GRIDSIZE, obstacles
+from constants import Direction, GRIDSIZE, obstacles, DEATH_EVENT
 import helpers
 from typing import Tuple
 
 # Returns true if any point in points is colliding with any tile
-def is_colliding(points : list[(int,int)], tiles : pygame.sprite.Group) -> bool:
+def is_colliding(points : list[(int,int)], tiles : pygame.sprite.Group) -> int:
     for tile in tiles:
         for point in points:
             if point != None and tile.rect.collidepoint(point):
-                return True
-    return False
+                if tile.danger:
+                    return 2
+                return 1
+    return 0
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, color:Tuple[int,int,int], width:int, height:int, start_x:int, start_y:int) -> None:
@@ -18,6 +20,8 @@ class Player(pygame.sprite.Sprite):
         self.color = color
         self.width = width
         self.height = height
+        self.spawn_x = start_x
+        self.spawn_y = start_y
         self.step_size = GRIDSIZE//4
         # Set starting conditions
         self.grid_x = start_x
@@ -45,7 +49,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.topleft = (self.grid_x, self.grid_y)
         self.keys()
 
-    def test_collision(self, direction: Direction, new_x :int, new_y:int, tiles : pygame.sprite.Group) -> bool:
+    def test_collision(self, direction: Direction, new_x :int, new_y:int, tiles : pygame.sprite.Group) -> int:
         if direction == direction.UP:
             p1, p2 = (new_x, new_y), (new_x+GRIDSIZE/2, new_y)
         elif direction == direction.DOWN:
@@ -55,31 +59,70 @@ class Player(pygame.sprite.Sprite):
         elif direction == direction.RIGHT:
             p1, p2 = (new_x+GRIDSIZE, new_y), (new_x+GRIDSIZE/2, new_y)
         collision = is_colliding([p1, p2], tiles)
+        print(collision)
         return collision
+    
+    def movement(self, direction):
+        print(direction)
+        death_event = pygame.event.Event(DEATH_EVENT)
+        print(death_event.type)
+        match direction:
+            case Direction.UP:
+                match self.test_collision(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):
+                    case 2:
+                        print("triggered collide")
+                        s = pygame.event.post(death_event)
+                    case 1:
+                        pass
+                    case 0:
+                        self.grid_y += -self.step_size
+                        self.anim_step = (self.anim_step + 1) % 3
+                self.dir = Direction.UP
+            case Direction.LEFT:
+                match self.test_collision(Direction.LEFT, self.grid_x-self.step_size, self.grid_y, obstacles):
+                    case 2:
+                        print("triggered collide")
+                        s = pygame.event.post(death_event)
+                    case 1:
+                        pass
+                    case 0:
+                        self.grid_x += -self.step_size
+                        self.anim_step = (self.anim_step + 1) % 3
+                self.dir = Direction.LEFT
+            case Direction.DOWN:
+                match self.test_collision(Direction.DOWN, self.grid_x, self.grid_y, obstacles):
+                    case 2:
+                        print("triggered collide")
+                        s = pygame.event.post(death_event)
+                    case 1:
+                        pass
+                    case 0:
+                        self.grid_y += self.step_size
+                        self.anim_step = (self.anim_step + 1) % 3
+                self.dir = Direction.DOWN
+            case Direction.RIGHT:
+                match self.test_collision(Direction.RIGHT, self.grid_x, self.grid_y, obstacles):
+                    case 2:
+                        print("triggered collide")
+                        s = pygame.event.post(death_event)
+                    case 1:
+                        pass
+                    case 0:
+                        self.grid_x += self.step_size
+                        self.anim_step = (self.anim_step + 1) % 3
+                self.dir = Direction.RIGHT
+        self.image = self.images[self.dir][self.anim_step]
 
     def keys(self) -> None:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
-            if not self.test_collision(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):
-                self.grid_y += -self.step_size
-                self.anim_step = (self.anim_step + 1) % 3
-            self.dir = Direction.UP
+            self.movement(Direction.UP)
         elif keys[pygame.K_a]:
-            if not self.test_collision(Direction.LEFT, self.grid_x-self.step_size, self.grid_y, obstacles):
-                self.grid_x += -self.step_size
-                self.anim_step = (self.anim_step + 1) % 3
-            self.dir = Direction.LEFT
+            self.movement(Direction.LEFT)
         elif keys[pygame.K_s]:
-            if not self.test_collision(Direction.DOWN, self.grid_x, self.grid_y, obstacles):
-                self.grid_y += self.step_size
-                self.anim_step = (self.anim_step + 1) % 3
-            self.dir = Direction.DOWN
+            self.movement(Direction.DOWN)
         elif keys[pygame.K_d]:
-            if not self.test_collision(Direction.RIGHT, self.grid_x, self.grid_y, obstacles):
-                self.grid_x += self.step_size
-                self.anim_step = (self.anim_step + 1) % 3
-            self.dir = Direction.RIGHT
-        self.image = self.images[self.dir][self.anim_step]
+            self.movement(Direction.RIGHT)
 class Demogorgon(pygame.sprite.Sprite):
     def __init__(self, x:int, y:int) -> None:
         pygame.sprite.Sprite.__init__(self)
@@ -95,9 +138,9 @@ class Demogorgon(pygame.sprite.Sprite):
         self.rect.topleft = (self.x, self.y)
 
 class Obstacle(pygame.sprite.Sprite):
-    def __init__(self,x:int,y:int,w:int,h:int):
+    def __init__(self,x:int,y:int,w:int,h:int, danger:bool) -> None:
         pygame.sprite.Sprite.__init__(self, obstacles)
         self.rect = pygame.Rect(x,y,w,h)
         self.rect.x = x 
         self.rect.y = y
-
+        self.danger = danger
