@@ -384,6 +384,6 @@
   <object id="68" name="player_collide" x="192" y="1200" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="5" name="spawn_points">
-  <object id="10" name="player_spawn" x="304" y="1088" width="16" height="16"/>
+  <object id="10" name="player_spawn" x="312" y="1178" width="16" height="16"/>
  </objectgroup>
 </map>

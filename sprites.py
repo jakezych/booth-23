@@ -32,6 +32,7 @@ class Player(pygame.sprite.Sprite):
         self.load_sprites()
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.grid_x, self.grid_y)
+        self.title_screen = True
 
     def load_sprites(self, filename : str= "data/sprites/booth23sprite_white.png") -> None:
         ss = helpers.spritesheet(filename, )
@@ -59,13 +60,11 @@ class Player(pygame.sprite.Sprite):
         elif direction == direction.RIGHT:
             p1, p2 = (new_x+GRIDSIZE, new_y), (new_x+GRIDSIZE/2, new_y)
         collision = is_colliding([p1, p2], tiles)
-        print(collision)
         return collision
     
     def movement(self, direction):
-        print(direction)
         death_event = pygame.event.Event(DEATH_EVENT)
-        print(death_event.type)
+        self.title_screen = False
         match direction:
             case Direction.UP:
                 match self.test_collision(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):

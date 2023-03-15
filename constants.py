@@ -23,3 +23,4 @@ class Direction(Enum):
   RIGHT = 2
   LEFT = 3
   DOWN = 4
+
