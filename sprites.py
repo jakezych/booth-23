@@ -1,7 +1,7 @@
+from typing import Tuple
 import pygame
 from constants import Direction, GRIDSIZE, obstacles, DEATH_EVENT
 import helpers
-from typing import Tuple
 
 # Returns true if any point in points is colliding with any tile
 
@@ -9,7 +9,7 @@ from typing import Tuple
 def is_colliding(points: list[(int, int)], tiles: pygame.sprite.Group) -> int:
     for tile in tiles:
         for point in points:
-            if point != None and tile.rect.collidepoint(point):
+            if point is not None and tile.rect.collidepoint(point):
                 if tile.danger:
                     return 2
                 return 1
@@ -39,7 +39,6 @@ class Player(pygame.sprite.Sprite):
 
     def load_sprites(self, filename: str = "data/sprites/booth23sprite_white.png") -> None:
         ss = helpers.spritesheet(filename, )
-        idle = ss.image_at((0, 0, 16, 16), colorkey=-1)
         self.images = {}
         self.images[Direction.DOWN] = ss.images_at(
             [(0, 0, 16, 16), (16, 0, 16, 16), (32, 0, 16, 16)], colorkey=-1)

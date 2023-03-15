@@ -1,32 +1,32 @@
-import pygame
+
 import sys
-import os
+import pygame
 import constants
 import sprites
 import tilemap
 
 
-def load_map(map: tilemap.TiledMap) -> sprites.Player:
+def load_map(tm: tilemap.TiledMap) -> sprites.Player:
     player = None
-    for obj in map.tmxdata.objects:
+    for obj in tm.tmxdata.objects:
         if obj.name == 'player_spawn':
             player = sprites.Player(None, obj.x, obj.y, obj.x, obj.y)
         if obj.name == 'player_collide':
-            ob = sprites.Obstacle(obj.x, obj.y, obj.width, obj.height, False)
+            _ = sprites.Obstacle(obj.x, obj.y, obj.width, obj.height, False)
         if obj.name == 'death_collide':
-            d = sprites.Obstacle(obj.x, obj.y, obj.width, obj.height, True)
+            _ = sprites.Obstacle(obj.x, obj.y, obj.width, obj.height, True)
     return player
 
 
 def main():
     clock = pygame.time.Clock()
-    start_time = pygame.time.get_ticks()
+    # start_time = pygame.time.get_ticks()
     pygame.init()
     pygame.display.set_caption('PDT Booth23')
     size = width, height = constants.WIDTH, constants.HEIGHT
 
     light = pygame.image.load('data/spotlights/spotlight1.png')
-    filter = pygame.surface.Surface(size)
+    light_filter = pygame.surface.Surface(size)
 
     title = pygame.image.load('data/sprites/title.png')
 
@@ -65,16 +65,16 @@ def main():
         map_rect = map_img_bot.get_rect()
 
         # Blit lighting filter (should actually be after??)
-        filter.fill(pygame.color.Color('whitesmoke'))
+        light_filter.fill(pygame.color.Color('whitesmoke'))
         # -42 shifts center of light to center of player sprite
-        filter.blit(light, camera.apply_offset(player, -42, -42))
+        light_filter.blit(light, camera.apply_offset(player, -42, -42))
 
         # Blit game elements onto the window
         win.blit(map_img_bot, camera.apply_rect(map_rect))
         # win.blit(dg.image, camera.apply(dg))
         win.blit(player.image, camera.apply(player))
         win.blit(map_img_top, camera.apply_rect(map_rect))
-        win.blit(filter, (0, 0), special_flags=pygame.BLEND_RGBA_SUB)
+        win.blit(light_filter, (0, 0), special_flags=pygame.BLEND_RGBA_SUB)
         if player.title_screen:
             win.blit(title, (77, 50))
 
