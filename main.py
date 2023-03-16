@@ -41,6 +41,7 @@ class Game:
         self.game_map = self.maps[self.active_map]
         self.player = load_map(self.game_map)
         self.camera = tilemap.Camera(self.game_map.width, self.game_map.height)
+        self.show_masks = False
 
     def process_events(self) -> None:
         events = pygame.event.get()
@@ -55,6 +56,8 @@ class Game:
                 #self.player.title_screen = True
             elif event.type == constants.WIN_EVENT:
                 self.change_map()
+            elif event.type == constants.SHOW_MASKS:
+                self.show_masks = not self.show_masks
 
     def update_sprites(self) -> None:
         self.player.update()
@@ -80,6 +83,24 @@ class Game:
                 graphics.PLAYER_5, self.camera.apply_offset(l, -68, -67))
         return graphics.LIGHT_FILTER
 
+    def render_masks(self, temp_surface: pygame.Surface) -> pygame.Surface:
+
+        outline = [(p[0] + self.camera.apply(self.player)[0], p[1] +
+                    self.camera.apply(self.player)[1]) for p in self.player.mask.outline()]
+        pygame.draw.lines(temp_surface, (255, 0, 255), False, outline, 1)
+
+        for block in constants.obstacles:
+            outline = [(p[0] + self.camera.apply(block)[0], p[1] +
+                        self.camera.apply(block)[1]) for p in block.mask.outline()]
+            pygame.draw.lines(temp_surface, (255, 0, 255), False, outline, 1)
+            overlap_mask = self.player.mask.overlap_mask(
+                block.mask, (block.rect.x - self.player.grid_x, block.rect.y - self.player.grid_y))
+            # print(self.player.mask.overlap(block.mask, (block.rect.x -
+            #      self.player.grid_x, block.rect.y - self.player.grid_y)))
+            temp_surface.blit(overlap_mask.to_surface(unsetcolor=(0, 0, 0, 0), setcolor=(255, 0, 0, 255)),
+                              self.camera.apply(self.player))
+        return temp_surface
+
     def render_map(self) -> None:
         map_img_bot = self.game_map.make_map()
         map_img_top = self.game_map.make_map_top()
@@ -89,6 +110,8 @@ class Game:
         # Blit game elements onto the window
         temp_surface.blit(map_img_bot, self.camera.apply_rect(map_rect))
         temp_surface.blit(self.player.image, self.camera.apply(self.player))
+        if self.show_masks:
+            temp_surface = self.render_masks(temp_surface)
         temp_surface.blit(map_img_top, self.camera.apply_rect(map_rect))
         return temp_surface
 
@@ -103,6 +126,7 @@ def main() -> None:
     screen = pygame.display.set_mode(
         (width*constants.SCREEN_SCALING_FACTOR, height*constants.SCREEN_SCALING_FACTOR))
     game = Game()
+    render_masks = False
     while 1:
         # update
         game.process_events()
