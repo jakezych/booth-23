@@ -1,21 +1,29 @@
 # booth-23
 
+## Instructions
+
+To play the game, run `python3 main.py` in the main project directory.
+
+## Map making guidelines
+
+The game automatically processes map info from Tiled so that they interact with the player (collision blocks, spawn point block, etc). To make sure this works correctly, you have to assign Tiled objects certain names. 
+
+Take a look at some of the existing maps in `data/maps` for an example. The important stuff is:
+
+| Tiled object name | Description |
+| ----------- | ----------- |
+| player_spawn      | Determines where the player will spawn       |
+| player_collide   | If player collision, stop player (basic world collision)        |
+| death_collide   | If player collision, send player back to spawn point (death)        |
+| win_collide   | if player collision, send player to next level        |
+
 ## todo
+* Pixel perfect collision with Pygame masks
+* Add levels (1-2)
+* Texture all levels
+* Add blocks to change flashlight size as player moves through the world
 
-### gameplay
-* HIGH PRIORITY
-* fix collision code, need some way to get around friction issue
-
-* actual gameplay
-* counting down timer
-
-* starting screen
-* flashlight
-  * spotlight on top of player
-  * https://stackoverflow.com/questions/31038285/python-pygame-game-lighting
-  * https://www.reddit.com/r/pygame/comments/5cmmdg/technique_flashlight/
-* candle?
-  * progressively smaller radius around the player
+### extras
 * secrets
 * interact button
 * chasing demagorgon
