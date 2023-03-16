@@ -20,6 +20,7 @@ Take a look at some of the existing maps in `data/maps` for an example. The impo
 | player_collide   | If player collision, stop player (basic world collision)        |
 | death_collide   | If player collision, send player back to spawn point (death)        |
 | win_collide   | if player collision, send player to next level        |
+| light | Creates a spotlight to illuminate block
 
 ## todo
 * ~~Pixel perfect collision with Pygame masks~~
