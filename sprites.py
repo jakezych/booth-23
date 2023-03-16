@@ -1,12 +1,12 @@
 from typing import Tuple
 import pygame
-from constants import Direction, GRIDSIZE, obstacles, lights,  DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT, TITLE_SCREEN_TIME
+from constants import Direction, GRIDSIZE, obstacles, lights,  DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT, TITLE_SCREEN_TIME, SHOW_MASKS
 import helpers
 
 # Returns true if any point in points is colliding with any tile
 
 
-def is_colliding(points: list[(int, int)], tiles: pygame.sprite.Group) -> int:
+def is_colliding_points(points: list[(int, int)], tiles: pygame.sprite.Group) -> int:
     for tile in tiles:
         for point in points:
             if point is not None and tile.rect.collidepoint(point):
@@ -15,6 +15,17 @@ def is_colliding(points: list[(int, int)], tiles: pygame.sprite.Group) -> int:
                 elif tile.type == BlockType.WIN:
                     return 3
                 return 1
+    return 0
+
+
+def is_colliding_masks(player, new_x: int, new_y: int, tiles: pygame.sprite.Group) -> int:
+    for tile in tiles:
+        if player.mask.overlap(tile.mask, (tile.rect.x - new_x, tile.rect.y - new_y)) is not None:
+            if tile.type == BlockType.DEATH:
+                return 2
+            elif tile.type == BlockType.WIN:
+                return 3
+            return 1
     return 0
 
 
@@ -52,13 +63,15 @@ class Player(pygame.sprite.Sprite):
             [(48, 16, 16, 16), (64, 16, 16, 16), (80, 16, 16, 16)], colorkey=-1)
         #self.images[Direction.LEFT] = [pygame.transform.flip(x, flip_x=True, flip_y=False) for x in ss.images_at([(48, 0,16,16), (64,0,16,16), (80,0,16,16)], colorkey=-1)]
         self.image = self.images[Direction.DOWN][self.anim_step]
+        self.mask = pygame.mask.from_surface(self.image)
 
     def update(self) -> None:
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.grid_x, self.grid_y)
         self.keys()
+        self.mask = pygame.mask.from_surface(self.image)
 
-    def test_collision(self, direction: Direction, new_x: int, new_y: int, tiles: pygame.sprite.Group) -> int:
+    def test_collision_points(self, direction: Direction, new_x: int, new_y: int, tiles: pygame.sprite.Group) -> int:
         if direction == direction.UP:
             p1, p2 = (new_x, new_y), (new_x+GRIDSIZE/2, new_y)
         elif direction == direction.DOWN:
@@ -68,7 +81,17 @@ class Player(pygame.sprite.Sprite):
             p1, p2 = (new_x, new_y), (new_x, new_y+GRIDSIZE/2)
         elif direction == direction.RIGHT:
             p1, p2 = (new_x+GRIDSIZE, new_y), (new_x+GRIDSIZE/2, new_y)
-        collision = is_colliding([p1, p2], tiles)
+        collision = is_colliding_points([p1, p2], tiles)
+        return collision
+
+    def test_collision_masks(self, direction: Direction, new_x: int, new_y: int, tiles: pygame.sprite.Group) -> int:
+        if direction == Direction.RIGHT:
+            new_x += 2
+            new_y -= 2
+        elif direction == Direction.DOWN:
+            new_x -= 2
+            new_y += 2
+        collision = is_colliding_masks(self, new_x, new_y, tiles)
         return collision
 
     def movement(self, direction: Direction) -> None:
@@ -78,7 +101,8 @@ class Player(pygame.sprite.Sprite):
             self.title_screen = False
         match direction:
             case Direction.UP:
-                match self.test_collision(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):
+                match self.test_collision_masks(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):
+                    # match self.test_collision(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):
                     case 3:
                         _ = pygame.event.post(win_event)
                     case 2:
@@ -90,7 +114,8 @@ class Player(pygame.sprite.Sprite):
                         self.anim_step += 1
                 self.dir = Direction.UP
             case Direction.LEFT:
-                match self.test_collision(Direction.LEFT, self.grid_x-self.step_size, self.grid_y, obstacles):
+                match self.test_collision_masks(Direction.LEFT, self.grid_x-self.step_size, self.grid_y, obstacles):
+                    # match self.test_collision(Direction.LEFT, self.grid_x-self.step_size, self.grid_y, obstacles):
                     case 3:
                         _ = pygame.event.post(win_event)
                     case 2:
@@ -102,7 +127,8 @@ class Player(pygame.sprite.Sprite):
                         self.anim_step += 1
                 self.dir = Direction.LEFT
             case Direction.DOWN:
-                match self.test_collision(Direction.DOWN, self.grid_x, self.grid_y, obstacles):
+                match self.test_collision_masks(Direction.DOWN, self.grid_x+self.step_size, self.grid_y, obstacles):
+                    # match self.test_collision(Direction.DOWN, self.grid_x, self.grid_y, obstacles):
                     case 3:
                         _ = pygame.event.post(win_event)
                     case 2:
@@ -114,7 +140,8 @@ class Player(pygame.sprite.Sprite):
                         self.anim_step += 1
                 self.dir = Direction.DOWN
             case Direction.RIGHT:
-                match self.test_collision(Direction.RIGHT, self.grid_x, self.grid_y, obstacles):
+                match self.test_collision_masks(Direction.RIGHT, self.grid_x, self.grid_y+self.step_size, obstacles):
+                    # match self.test_collision(Direction.RIGHT, self.grid_x, self.grid_y, obstacles):
                     case 3:
                         _ = pygame.event.post(win_event)
                     case 2:
@@ -137,6 +164,8 @@ class Player(pygame.sprite.Sprite):
             self.movement(Direction.DOWN)
         elif keys[pygame.K_d]:
             self.movement(Direction.RIGHT)
+        elif keys[pygame.K_m]:
+            pygame.event.post(pygame.event.Event(SHOW_MASKS))
 
 
 class Demogorgon(pygame.sprite.Sprite):
@@ -162,6 +191,7 @@ class Block(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.type = type
+        self.mask = pygame.mask.from_surface(pygame.Surface((w, h)))
 
 
 class Light(pygame.sprite.Sprite):

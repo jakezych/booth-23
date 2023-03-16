@@ -10,9 +10,9 @@ WHITE = (255, 255, 255)
 
 WIDTH = 320
 HEIGHT = 320
-FPS = 48
+FPS = 50
 GRIDSIZE = 16
-SCREEN_SCALING_FACTOR = 3
+SCREEN_SCALING_FACTOR = 3.5
 ANIM_SPEED = 3
 TITLE_SCREEN_TIME = 25
 
@@ -22,6 +22,7 @@ lights = pygame.sprite.Group()
 
 DEATH_EVENT = pygame.event.custom_type()
 WIN_EVENT = pygame.event.custom_type()
+SHOW_MASKS = pygame.event.custom_type()
 
 
 class Direction(Enum):
