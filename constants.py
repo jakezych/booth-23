@@ -17,6 +17,7 @@ WHITE = (255, 255, 255)
 obstacles = pygame.sprite.Group()
 
 DEATH_EVENT = pygame.event.custom_type()
+WIN_EVENT = pygame.event.custom_type()
 ANIM_SPEED = 3
 
 
@@ -25,3 +26,9 @@ class Direction(Enum):
     RIGHT = 2
     LEFT = 3
     DOWN = 4
+
+
+class BlockType(Enum):
+    COLLIDE = 0
+    DEATH = 1
+    WIN = 2
