@@ -41,6 +41,7 @@ class Game:
                 self.player.grid_y = self.player.spawn_y
                 self.player.dir = constants.Direction.UP
                 self.player.anim_step = 0
+                #self.player.title_screen = True
             elif event.type == constants.WIN_EVENT:
                 self.change_map()
 
@@ -83,6 +84,7 @@ def main():
     while True:
         game.process_events()
         game.update_sprites()
+        print(game.player.anim_step)
 
         map_img_bot = game.game_map.make_map()
         map_img_top = game.game_map.make_map_top()

@@ -32,3 +32,6 @@ class BlockType(Enum):
     COLLIDE = 0
     DEATH = 1
     WIN = 2
+
+
+TITLE_SCREEN_TIME = 25
