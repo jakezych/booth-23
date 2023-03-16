@@ -71,7 +71,7 @@ class Player(pygame.sprite.Sprite):
         collision = is_colliding([p1, p2], tiles)
         return collision
 
-    def movement(self, direction):
+    def movement(self, direction: Direction) -> None:
         death_event = pygame.event.Event(DEATH_EVENT)
         win_event = pygame.event.Event(WIN_EVENT)
         if self.anim_step > TITLE_SCREEN_TIME:
