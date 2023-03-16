@@ -1,6 +1,6 @@
 from typing import Tuple
 import pygame
-from constants import Direction, GRIDSIZE, obstacles, DEATH_EVENT, ANIM_SPEED
+from constants import Direction, GRIDSIZE, obstacles, DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT
 import helpers
 
 # Returns true if any point in points is colliding with any tile
@@ -10,8 +10,10 @@ def is_colliding(points: list[(int, int)], tiles: pygame.sprite.Group) -> int:
     for tile in tiles:
         for point in points:
             if point is not None and tile.rect.collidepoint(point):
-                if tile.danger:
+                if tile.type == BlockType.DEATH:
                     return 2
+                elif tile.type == BlockType.WIN:
+                    return 3
                 return 1
     return 0
 
@@ -71,10 +73,13 @@ class Player(pygame.sprite.Sprite):
 
     def movement(self, direction):
         death_event = pygame.event.Event(DEATH_EVENT)
+        win_event = pygame.event.Event(WIN_EVENT)
         self.title_screen = False
         match direction:
             case Direction.UP:
                 match self.test_collision(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):
+                    case 3:
+                        _ = pygame.event.post(win_event)
                     case 2:
                         s = pygame.event.post(death_event)
                     case 1:
@@ -85,6 +90,8 @@ class Player(pygame.sprite.Sprite):
                 self.dir = Direction.UP
             case Direction.LEFT:
                 match self.test_collision(Direction.LEFT, self.grid_x-self.step_size, self.grid_y, obstacles):
+                    case 3:
+                        _ = pygame.event.post(win_event)
                     case 2:
                         s = pygame.event.post(death_event)
                     case 1:
@@ -95,6 +102,8 @@ class Player(pygame.sprite.Sprite):
                 self.dir = Direction.LEFT
             case Direction.DOWN:
                 match self.test_collision(Direction.DOWN, self.grid_x, self.grid_y, obstacles):
+                    case 3:
+                        _ = pygame.event.post(win_event)
                     case 2:
                         s = pygame.event.post(death_event)
                     case 1:
@@ -105,6 +114,8 @@ class Player(pygame.sprite.Sprite):
                 self.dir = Direction.DOWN
             case Direction.RIGHT:
                 match self.test_collision(Direction.RIGHT, self.grid_x, self.grid_y, obstacles):
+                    case 3:
+                        _ = pygame.event.post(win_event)
                     case 2:
                         s = pygame.event.post(death_event)
                     case 1:
@@ -113,7 +124,6 @@ class Player(pygame.sprite.Sprite):
                         self.grid_x += self.step_size
                         self.anim_step = (self.anim_step + 1)
                 self.dir = Direction.RIGHT
-        print(self.anim_step)
         self.image = self.images[self.dir][(self.anim_step//ANIM_SPEED) % 3]
 
     def keys(self) -> None:
@@ -144,10 +154,10 @@ class Demogorgon(pygame.sprite.Sprite):
         self.rect.topleft = (self.x, self.y)
 
 
-class Obstacle(pygame.sprite.Sprite):
-    def __init__(self, x: int, y: int, w: int, h: int, danger: bool) -> None:
+class Block(pygame.sprite.Sprite):
+    def __init__(self, x: int, y: int, w: int, h: int, type: BlockType) -> None:
         pygame.sprite.Sprite.__init__(self, obstacles)
         self.rect = pygame.Rect(x, y, w, h)
         self.rect.x = x
         self.rect.y = y
-        self.danger = danger
+        self.type = type

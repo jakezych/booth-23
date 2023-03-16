@@ -12,76 +12,100 @@ def load_map(tm: tilemap.TiledMap) -> sprites.Player:
         if obj.name == 'player_spawn':
             player = sprites.Player(None, obj.x, obj.y, obj.x, obj.y)
         if obj.name == 'player_collide':
-            _ = sprites.Obstacle(obj.x, obj.y, obj.width, obj.height, False)
+            _ = sprites.Block(obj.x, obj.y, obj.width,
+                              obj.height, constants.BlockType.COLLIDE)
         if obj.name == 'death_collide':
-            _ = sprites.Obstacle(obj.x, obj.y, obj.width, obj.height, True)
+            _ = sprites.Block(obj.x, obj.y, obj.width,
+                              obj.height, constants.BlockType.DEATH)
+        if obj.name == 'win_collide':
+            _ = sprites.Block(obj.x, obj.y, obj.width,
+                              obj.height, constants.BlockType.WIN)
     return player
 
 
-def main():
-    clock = pygame.time.Clock()
-    # start_time = pygame.time.get_ticks()
-    pygame.init()
-    pygame.display.set_caption('PDT Booth23')
-    size = width, height = constants.WIDTH, constants.HEIGHT
+class Game:
+    def __init__(self, maps):
+        self.maps = maps
+        self.active_map = 0
+        self.game_map = maps[self.active_map]
+        self.player = load_map(self.game_map)
+        self.camera = tilemap.Camera(self.game_map.width, self.game_map.height)
 
-    light = pygame.image.load('data/spotlights/spotlight1.png')
-    light_filter = pygame.surface.Surface(size)
-
-    title = pygame.image.load('data/sprites/title.png')
-
-    win = pygame.Surface(size)
-    screen = pygame.display.set_mode(
-        (width*constants.SCREEN_SCALING_FACTOR, height*constants.SCREEN_SCALING_FACTOR))
-
-    title_map = tilemap.TiledMap("data/maps/title_map/title_map.tmx")
-
-    player = load_map(title_map)
-    camera = tilemap.Camera(title_map.width, title_map.height)
-
-    active_map = title_map
-
-    while True:
-        #counting_time = pygame.time.get_ticks() - start_time
-        #counting_seconds = str((counting_time%60000)//1000 )
-        # print(counting_seconds)
-
+    def process_events(self):
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == constants.DEATH_EVENT:
-                player.grid_x = player.spawn_x
-                player.grid_y = player.spawn_y
-                player.dir = constants.Direction.UP
-                player.anim_step = 0
+                self.player.grid_x = self.player.spawn_x
+                self.player.grid_y = self.player.spawn_y
+                self.player.dir = constants.Direction.UP
+                self.player.anim_step = 0
+            elif event.type == constants.WIN_EVENT:
+                self.change_map()
 
-        player.update()
-        camera.update(player)
+    def update_sprites(self):
+        self.player.update()
+        self.camera.update(self.player)
 
-        map_img_bot = active_map.make_map()
-        map_img_top = active_map.make_map_top()
+    def change_map(self):
+        self.active_map = (self.active_map + 1) % len(self.maps)
+        self.game_map = self.maps[self.active_map]
+        self.player = load_map(self.game_map)
+        self.camera = tilemap.Camera(
+            self.game_map.width, self.game_map.height)
+
+
+def get_maps():
+    title_map = tilemap.TiledMap("data/maps/level1/level1.tmx")
+    wood_map = tilemap.TiledMap("data/maps/title_map/title_map.tmx")
+    return [title_map, wood_map]
+
+
+def main():
+    clock = pygame.time.Clock()
+    pygame.init()
+    pygame.display.set_caption('PDT Booth23')
+    size = width, height = constants.WIDTH, constants.HEIGHT
+
+    light = pygame.transform.scale_by(
+        pygame.image.load('data/spotlights/spotlight4.png'), 0.75)
+    light_filter = pygame.surface.Surface(size)
+
+    title = pygame.image.load('data/sprites/title.png')
+
+    window = pygame.Surface(size)
+    screen = pygame.display.set_mode(
+        (width*constants.SCREEN_SCALING_FACTOR, height*constants.SCREEN_SCALING_FACTOR))
+
+    game = Game(get_maps())
+
+    while True:
+        game.process_events()
+        game.update_sprites()
+
+        map_img_bot = game.game_map.make_map()
+        map_img_top = game.game_map.make_map_top()
         map_img_top.set_colorkey((0, 0, 0))
         map_rect = map_img_bot.get_rect()
 
         # Blit lighting filter (should actually be after??)
-        light_filter.fill(pygame.color.Color('whitesmoke'))
+        light_filter.fill(pygame.color.Color('white'))
         # -42 shifts center of light to center of player sprite
-        light_filter.blit(light, camera.apply_offset(player, -42, -42))
+        light_filter.blit(
+            light, game.camera.apply_offset(game.player, -30, -30))
 
         # Blit game elements onto the window
-        win.blit(map_img_bot, camera.apply_rect(map_rect))
+        window.blit(map_img_bot, game.camera.apply_rect(map_rect))
         # win.blit(dg.image, camera.apply(dg))
-        win.blit(player.image, camera.apply(player))
-        win.blit(map_img_top, camera.apply_rect(map_rect))
-        win.blit(light_filter, (0, 0), special_flags=pygame.BLEND_RGBA_SUB)
-        if player.title_screen:
-            win.blit(title, (77, 50))
-
+        window.blit(game.player.image, game.camera.apply(game.player))
+        window.blit(map_img_top, game.camera.apply_rect(map_rect))
+        window.blit(light_filter, (0, 0), special_flags=pygame.BLEND_RGBA_SUB)
+        if game.player.title_screen:
+            window.blit(title, (77, 50))
         # Scale the window to the screen size
-        scaled_win = pygame.transform.scale(win, screen.get_size())
+        scaled_win = pygame.transform.scale(window, screen.get_size())
         screen.blit(scaled_win, (0, 0))
-
         clock.tick(constants.FPS)
         pygame.display.flip()
 
