@@ -7,6 +7,13 @@ import tilemap
 import graphics
 
 
+def get_maps() -> list[tilemap.TiledMap]:
+    title_map = tilemap.TiledMap("data/maps/level1/level1.tmx")
+    wood_map = tilemap.TiledMap("data/maps/title_map/title_map.tmx")
+    return [title_map, wood_map][::-1]
+    # return [title_map, wood_map]
+
+
 def load_map(tm: tilemap.TiledMap) -> sprites.Player:
     player = None
     for obj in tm.tmxdata.objects:
@@ -28,14 +35,14 @@ def load_map(tm: tilemap.TiledMap) -> sprites.Player:
 
 
 class Game:
-    def __init__(self, maps=None):
+    def __init__(self, maps: list[tilemap.TiledMap] = None) -> None:
         self.maps = get_maps() if maps is None else maps
         self.active_map = 0
         self.game_map = self.maps[self.active_map]
         self.player = load_map(self.game_map)
         self.camera = tilemap.Camera(self.game_map.width, self.game_map.height)
 
-    def process_events(self):
+    def process_events(self) -> None:
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -49,11 +56,11 @@ class Game:
             elif event.type == constants.WIN_EVENT:
                 self.change_map()
 
-    def update_sprites(self):
+    def update_sprites(self) -> None:
         self.player.update()
         self.camera.update(self.player)
 
-    def change_map(self):
+    def change_map(self) -> None:
         pygame.sprite.Group.empty(constants.obstacles)
         pygame.sprite.Group.empty(constants.lights)
         self.active_map = (self.active_map + 1) % len(self.maps)
@@ -62,7 +69,7 @@ class Game:
         self.camera = tilemap.Camera(
             self.game_map.width, self.game_map.height)
 
-    def render_lights(self):
+    def render_lights(self) -> None:
         # Blit lighting filter (should actually be after??)
         graphics.LIGHT_FILTER.fill(pygame.color.Color('white'))
         # -42 shifts center of light to center of player sprite
@@ -73,7 +80,7 @@ class Game:
                 graphics.PLAYER_5, self.camera.apply_offset(l, -68, -67))
         return graphics.LIGHT_FILTER
 
-    def render_map(self):
+    def render_map(self) -> None:
         map_img_bot = self.game_map.make_map()
         map_img_top = self.game_map.make_map_top()
         map_img_top.set_colorkey((0, 0, 0))
@@ -86,14 +93,7 @@ class Game:
         return temp_surface
 
 
-def get_maps():
-    title_map = tilemap.TiledMap("data/maps/level1/level1.tmx")
-    wood_map = tilemap.TiledMap("data/maps/title_map/title_map.tmx")
-    return [title_map, wood_map][::-1]
-    # return [title_map, wood_map]
-
-
-def main():
+def main() -> None:
     clock = pygame.time.Clock()
     pygame.init()
     pygame.display.set_caption('PDT Booth23')
@@ -119,6 +119,7 @@ def main():
         # update display
         clock.tick(constants.FPS)
         pygame.display.flip()
+    pygame.quit()
 
 
 if __name__ == "__main__":
