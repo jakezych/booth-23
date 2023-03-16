@@ -1,6 +1,6 @@
 from typing import Tuple
 import pygame
-from constants import Direction, GRIDSIZE, obstacles, DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT
+from constants import Direction, GRIDSIZE, obstacles, DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT, TITLE_SCREEN_TIME
 import helpers
 
 # Returns true if any point in points is colliding with any tile
@@ -74,7 +74,8 @@ class Player(pygame.sprite.Sprite):
     def movement(self, direction):
         death_event = pygame.event.Event(DEATH_EVENT)
         win_event = pygame.event.Event(WIN_EVENT)
-        self.title_screen = False
+        if self.anim_step > TITLE_SCREEN_TIME:
+            self.title_screen = False
         match direction:
             case Direction.UP:
                 match self.test_collision(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):
