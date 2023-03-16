@@ -1,6 +1,6 @@
 from typing import Tuple
 import pygame
-from constants import Direction, GRIDSIZE, obstacles, DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT, TITLE_SCREEN_TIME
+from constants import Direction, GRIDSIZE, obstacles, lights,  DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT, TITLE_SCREEN_TIME
 import helpers
 
 # Returns true if any point in points is colliding with any tile
@@ -162,3 +162,11 @@ class Block(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.type = type
+
+
+class Light(pygame.sprite.Sprite):
+    def __init__(self, x: int, y: int, w: int, h: int) -> None:
+        pygame.sprite.Sprite.__init__(self, lights)
+        self.rect = pygame.Rect(x, y, w, h)
+        self.rect.x = x
+        self.rect.y = y
