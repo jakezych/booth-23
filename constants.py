@@ -15,6 +15,8 @@ BLUE = (0, 0, 255)
 WHITE = (255, 255, 255)
 
 obstacles = pygame.sprite.Group()
+lights = pygame.sprite.Group()
+
 
 DEATH_EVENT = pygame.event.custom_type()
 WIN_EVENT = pygame.event.custom_type()
@@ -32,6 +34,7 @@ class BlockType(Enum):
     COLLIDE = 0
     DEATH = 1
     WIN = 2
+    LIGHT = 3
 
 
 TITLE_SCREEN_TIME = 25
