@@ -70,7 +70,7 @@ def main():
     size = width, height = constants.WIDTH, constants.HEIGHT
 
     light = pygame.transform.scale_by(
-        pygame.image.load('data/spotlights/spotlight4.png'), 0.75)
+        pygame.image.load('data/spotlights/spotlight5.png'), 0.75)
     light_filter = pygame.surface.Surface(size)
 
     title = pygame.image.load('data/sprites/title.png')
@@ -84,7 +84,6 @@ def main():
     while True:
         game.process_events()
         game.update_sprites()
-        print(game.player.anim_step)
 
         map_img_bot = game.game_map.make_map()
         map_img_top = game.game_map.make_map_top()
@@ -95,7 +94,7 @@ def main():
         light_filter.fill(pygame.color.Color('white'))
         # -42 shifts center of light to center of player sprite
         light_filter.blit(
-            light, game.camera.apply_offset(game.player, -30, -30))
+            light, game.camera.apply_offset(game.player, -66, -66))
 
         # Blit game elements onto the window
         window.blit(map_img_bot, game.camera.apply_rect(map_rect))
