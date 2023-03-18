@@ -1,32 +1,16 @@
 from typing import Tuple
 import pygame
-from constants import Direction, GRIDSIZE, obstacles, lights,  DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT, TITLE_SCREEN_TIME, SHOW_MASKS
+from constants import Direction, GRIDSIZE, obstacles, lights,  DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT, TITLE_SCREEN_TIME, SHOW_MASKS_EVENT
 import helpers
 
 # Returns true if any point in points is colliding with any tile
 
 
-def is_colliding_points(points: list[(int, int)], tiles: pygame.sprite.Group) -> int:
-    for tile in tiles:
-        for point in points:
-            if point is not None and tile.rect.collidepoint(point):
-                if tile.type == BlockType.DEATH:
-                    return 2
-                elif tile.type == BlockType.WIN:
-                    return 3
-                return 1
-    return 0
-
-
-def is_colliding_masks(player, new_x: int, new_y: int, tiles: pygame.sprite.Group) -> int:
+def is_colliding_masks(player, new_x: int, new_y: int, tiles: pygame.sprite.Group) -> BlockType:
     for tile in tiles:
         if player.mask.overlap(tile.mask, (tile.rect.x - new_x, tile.rect.y - new_y)) is not None:
-            if tile.type == BlockType.DEATH:
-                return 2
-            elif tile.type == BlockType.WIN:
-                return 3
-            return 1
-    return 0
+            return tile.type
+    return None
 
 
 class Player(pygame.sprite.Sprite):
@@ -49,6 +33,8 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.grid_x, self.grid_y)
         self.title_screen = True
+        self.scare_on_next = False
+        self.scare = False
 
     def load_sprites(self, filename: str = "data/sprites/booth23sprite_white.png") -> None:
         ss = helpers.spritesheet(filename, )
@@ -71,19 +57,6 @@ class Player(pygame.sprite.Sprite):
         self.keys()
         self.mask = pygame.mask.from_surface(self.image)
 
-    def test_collision_points(self, direction: Direction, new_x: int, new_y: int, tiles: pygame.sprite.Group) -> int:
-        if direction == direction.UP:
-            p1, p2 = (new_x, new_y), (new_x+GRIDSIZE/2, new_y)
-        elif direction == direction.DOWN:
-            p1, p2 = (new_x, new_y+GRIDSIZE), (new_x +
-                                               GRIDSIZE/2, new_y+GRIDSIZE)
-        elif direction == direction.LEFT:
-            p1, p2 = (new_x, new_y), (new_x, new_y+GRIDSIZE/2)
-        elif direction == direction.RIGHT:
-            p1, p2 = (new_x+GRIDSIZE, new_y), (new_x+GRIDSIZE/2, new_y)
-        collision = is_colliding_points([p1, p2], tiles)
-        return collision
-
     def test_collision_masks(self, direction: Direction, new_x: int, new_y: int, tiles: pygame.sprite.Group) -> int:
         if direction == Direction.RIGHT:
             new_x += 2
@@ -91,81 +64,93 @@ class Player(pygame.sprite.Sprite):
         elif direction == Direction.DOWN:
             new_x -= 2
             new_y += 2
-        collision = is_colliding_masks(self, new_x, new_y, tiles)
-        return collision
+        return is_colliding_masks(self, new_x, new_y, tiles)
 
     def movement(self, direction: Direction) -> None:
         death_event = pygame.event.Event(DEATH_EVENT)
         win_event = pygame.event.Event(WIN_EVENT)
         if self.anim_step > TITLE_SCREEN_TIME:
             self.title_screen = False
+            # self.scare_on_next = True
         match direction:
             case Direction.UP:
                 match self.test_collision_masks(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):
-                    # match self.test_collision(Direction.UP, self.grid_x, self.grid_y - self.step_size, obstacles):
-                    case 3:
-                        _ = pygame.event.post(win_event)
-                    case 2:
-                        s = pygame.event.post(death_event)
-                    case 1:
-                        pass
-                    case 0:
+                    case None:
                         self.grid_y += -self.step_size
                         self.anim_step += 1
+                    case BlockType.DEATH:
+                        _ = pygame.event.post(death_event)
+                        if self.scare_on_next:
+                            self.scare = True
+                    case BlockType.WIN:
+                        _ = pygame.event.post(win_event)
+                    case BlockType.SCARE:
+                        self.grid_y += -self.step_size
+                        self.anim_step += 1
+                        self.scare_on_next = True
                 self.dir = Direction.UP
             case Direction.LEFT:
                 match self.test_collision_masks(Direction.LEFT, self.grid_x-self.step_size, self.grid_y, obstacles):
-                    # match self.test_collision(Direction.LEFT, self.grid_x-self.step_size, self.grid_y, obstacles):
-                    case 3:
-                        _ = pygame.event.post(win_event)
-                    case 2:
-                        s = pygame.event.post(death_event)
-                    case 1:
-                        pass
-                    case 0:
+                    case None:
                         self.grid_x += -self.step_size
                         self.anim_step += 1
+                    case BlockType.DEATH:
+                        _ = pygame.event.post(death_event)
+                        if self.scare_on_next:
+                            self.scare = True
+                    case BlockType.WIN:
+                        _ = pygame.event.post(win_event)
+                    case BlockType.SCARE:
+                        self.grid_x += -self.step_size
+                        self.anim_step += 1
+                        self.scare_on_next = True
                 self.dir = Direction.LEFT
             case Direction.DOWN:
                 match self.test_collision_masks(Direction.DOWN, self.grid_x+self.step_size, self.grid_y, obstacles):
-                    # match self.test_collision(Direction.DOWN, self.grid_x, self.grid_y, obstacles):
-                    case 3:
-                        _ = pygame.event.post(win_event)
-                    case 2:
-                        s = pygame.event.post(death_event)
-                    case 1:
-                        pass
-                    case 0:
+                    case None:
                         self.grid_y += self.step_size
                         self.anim_step += 1
+                    case BlockType.DEATH:
+                        _ = pygame.event.post(death_event)
+                        if self.scare_on_next:
+                            self.scare = True
+                    case BlockType.WIN:
+                        _ = pygame.event.post(win_event)
+                    case BlockType.SCARE:
+                        self.grid_y += self.step_size
+                        self.anim_step += 1
+                        self.scare_on_next = True
                 self.dir = Direction.DOWN
             case Direction.RIGHT:
                 match self.test_collision_masks(Direction.RIGHT, self.grid_x, self.grid_y+self.step_size, obstacles):
-                    # match self.test_collision(Direction.RIGHT, self.grid_x, self.grid_y, obstacles):
-                    case 3:
-                        _ = pygame.event.post(win_event)
-                    case 2:
-                        s = pygame.event.post(death_event)
-                    case 1:
-                        pass
-                    case 0:
+                    case None:
                         self.grid_x += self.step_size
                         self.anim_step = (self.anim_step + 1)
+                    case BlockType.DEATH:
+                        _ = pygame.event.post(death_event)
+                        if self.scare_on_next:
+                            self.scare = True
+                    case BlockType.WIN:
+                        _ = pygame.event.post(win_event)
+                    case BlockType.SCARE:
+                        self.grid_x += self.step_size
+                        self.anim_step = (self.anim_step + 1)
+                        self.scare_on_next = True
                 self.dir = Direction.RIGHT
         self.image = self.images[self.dir][(self.anim_step//ANIM_SPEED) % 3]
 
     def keys(self) -> None:
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
+        if keys[pygame.K_w] or keys[pygame.K_UP]:
             self.movement(Direction.UP)
-        elif keys[pygame.K_a]:
+        elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.movement(Direction.LEFT)
-        elif keys[pygame.K_s]:
+        elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
             self.movement(Direction.DOWN)
-        elif keys[pygame.K_d]:
+        elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.movement(Direction.RIGHT)
         elif keys[pygame.K_m]:
-            pygame.event.post(pygame.event.Event(SHOW_MASKS))
+            pygame.event.post(pygame.event.Event(SHOW_MASKS_EVENT))
 
 
 class Demogorgon(pygame.sprite.Sprite):

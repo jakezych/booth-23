@@ -1,6 +1,7 @@
 from enum import Enum
 import pygame
 
+WINDOW_CAPTION = 'Stranger Things ΦΔΘ'
 # Colors
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -22,7 +23,7 @@ lights = pygame.sprite.Group()
 
 DEATH_EVENT = pygame.event.custom_type()
 WIN_EVENT = pygame.event.custom_type()
-SHOW_MASKS = pygame.event.custom_type()
+SHOW_MASKS_EVENT = pygame.event.custom_type()
 
 
 class Direction(Enum):
@@ -37,3 +38,4 @@ class BlockType(Enum):
     DEATH = 1
     WIN = 2
     LIGHT = 3
+    SCARE = 4

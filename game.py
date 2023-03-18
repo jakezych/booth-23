@@ -3,14 +3,16 @@ import tilemap
 import sprites
 import constants
 import sys
-import graphics
+from typing import Tuple
+import media
 
 
 def get_maps() -> list[tilemap.TiledMap]:
+    first = tilemap.TiledMap("data/maps/first/first.tmx")
+    second = tilemap.TiledMap("data/maps/second/second.tmx")
     title_map = tilemap.TiledMap("data/maps/level1/level1.tmx")
-    wood_map = tilemap.TiledMap("data/maps/title_map/title_map.tmx")
-    # return [title_map, wood_map][::-1]
-    return [title_map, wood_map]
+    #wood_map = tilemap.TiledMap("data/maps/title_map/title_map.tmx")
+    return [first, second, title_map][::-1]
 
 
 def load_map(tm: tilemap.TiledMap) -> sprites.Player:
@@ -27,6 +29,9 @@ def load_map(tm: tilemap.TiledMap) -> sprites.Player:
         if obj.name == 'win_collide':
             _ = sprites.Block(obj.x, obj.y, obj.width,
                               obj.height, constants.BlockType.WIN)
+        if obj.name == 'scare_collide':
+            _ = sprites.Block(obj.x, obj.y, obj.width,
+                              obj.height, constants.BlockType.SCARE)
         if obj.name == 'light':
             _ = sprites.Light(obj.x, obj.y, obj.width,
                               obj.height)
@@ -34,13 +39,16 @@ def load_map(tm: tilemap.TiledMap) -> sprites.Player:
 
 
 class Game:
-    def __init__(self, maps: list[tilemap.TiledMap] = None) -> None:
-        self.maps = get_maps() if maps is None else maps
+    def __init__(self, screen_width, screen_height) -> None:
+        self.maps = get_maps()
+        self.screen_w = screen_width
+        self.screen_h = screen_height
         self.active_map = 0
         self.game_map = self.maps[self.active_map]
         self.player = load_map(self.game_map)
         self.camera = tilemap.Camera(self.game_map.width, self.game_map.height)
         self.show_masks = False
+        self.done = False
 
     def process_events(self) -> None:
         events = pygame.event.get()
@@ -55,7 +63,7 @@ class Game:
                 #self.player.title_screen = True
             elif event.type == constants.WIN_EVENT:
                 self.change_map()
-            elif event.type == constants.SHOW_MASKS:
+            elif event.type == constants.SHOW_MASKS_EVENT:
                 self.show_masks = not self.show_masks
 
     def update_sprites(self) -> None:
@@ -70,18 +78,20 @@ class Game:
         self.player = load_map(self.game_map)
         self.camera = tilemap.Camera(
             self.game_map.width, self.game_map.height)
+        self.player.scare = False
+        self.player.scare_on_next = False
 
     def render_lights(self) -> None:
         # Blit lighting filter (should actually be after??)
-        graphics.LIGHT_FILTER.fill(pygame.color.Color('white'))
-        # -42 shifts center of light to center of player sprite
-        graphics.LIGHT_FILTER.blit(
+        media.LIGHT_FILTER.fill(pygame.color.Color('white'))
+        # -192 shifts center of light to center of player sprite
+        media.LIGHT_FILTER.blit(
             # more negative is closer to top left
-            graphics.PLAYER_5, self.camera.apply_offset(self.player, -(192), -(192)))
+            media.PLAYER_5, self.camera.apply_offset(self.player, -(192), -(192)))
         for l in pygame.sprite.Group.sprites(constants.lights):
-            graphics.LIGHT_FILTER.blit(
-                graphics.PLAYER_5, self.camera.apply_offset(l, -192, -192))
-        return graphics.LIGHT_FILTER
+            media.LIGHT_FILTER.blit(
+                media.PLAYER_5, self.camera.apply_offset(l, -192, -192))
+        return media.LIGHT_FILTER
 
     def render_masks(self, temp_surface: pygame.Surface) -> pygame.Surface:
 
@@ -114,3 +124,27 @@ class Game:
             temp_surface = self.render_masks(temp_surface)
         temp_surface.blit(map_img_top, self.camera.apply_rect(map_rect))
         return temp_surface
+
+    def render_game(self, surf: pygame.Surface) -> Tuple[pygame.Surface, Tuple[int, int]]:
+        if self.player.scare:
+            if self.done == False:
+                pygame.mixer.music.load(media.SCARE_ROAR)
+                pygame.mixer.music.set_volume(1)
+                pygame.mixer.music.play()
+                self.done = True
+            return self.scare(), (0, 0)
+        surf.blit(self.render_map(), (0, 0))
+        surf.blit(self.render_lights(), (0, 0),
+                  special_flags=pygame.BLEND_RGBA_SUB)
+        if self.player.title_screen:
+            surf.blit(media.TITLE_SCREEN_IMG, (77, 25))
+        scaled_win = pygame.transform.scale(surf, (
+            constants.WIDTH*constants.SCREEN_SCALING_FACTOR, constants.HEIGHT*constants.SCREEN_SCALING_FACTOR))
+        return scaled_win, (340, 0)
+
+    def scare(self) -> pygame.Surface:
+        scare = pygame.image.load(media.SCARE_IMG_PATH)
+        surf = pygame.Surface(
+            (self.screen_w, self.screen_h))
+        surf.blit(scare, (0, 0))
+        return surf
