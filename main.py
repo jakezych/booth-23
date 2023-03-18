@@ -10,6 +10,7 @@ def main() -> None:
     clock = pygame.time.Clock()
     pygame.init()
     pygame.display.set_caption(constants.WINDOW_CAPTION)
+    pygame.mouse.set_visible(False)
     # Play music
     size = constants.WIDTH, constants.HEIGHT
     info = pygame.display.Info()

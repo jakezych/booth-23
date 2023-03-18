@@ -5,6 +5,7 @@ import constants
 import sys
 from typing import Tuple
 import media
+import random
 
 
 def get_maps() -> list[tilemap.TiledMap]:
@@ -48,7 +49,9 @@ class Game:
         self.player = load_map(self.game_map)
         self.camera = tilemap.Camera(self.game_map.width, self.game_map.height)
         self.show_masks = False
+        self.show_timer = False
         self.done = False
+        self.timer = 0
 
     def process_events(self) -> None:
         events = pygame.event.get()
@@ -65,8 +68,11 @@ class Game:
                 self.change_map()
             elif event.type == constants.SHOW_MASKS_EVENT:
                 self.show_masks = not self.show_masks
+            elif event.type == constants.SHOW_TIMER_EVENT:
+                self.show_timer = not self.show_timer
 
     def update_sprites(self) -> None:
+        self.timer += 1
         self.player.update()
         self.camera.update(self.player)
 
@@ -95,6 +101,7 @@ class Game:
 
     def render_masks(self, temp_surface: pygame.Surface) -> pygame.Surface:
 
+        # -- Uncomment to draw mask around player --
         # outline = [(p[0] + self.camera.apply(self.player)[0], p[1] +
         #            self.camera.apply(self.player)[1]) for p in self.player.mask.outline()]
         #pygame.draw.lines(temp_surface, (255, 0, 0), False, outline, 1)
@@ -105,11 +112,20 @@ class Game:
             pygame.draw.lines(temp_surface, (255, 0, 0), False, outline, 1)
             overlap_mask = self.player.mask.overlap_mask(
                 block.mask, (block.rect.x - self.player.grid_x, block.rect.y - self.player.grid_y))
+            # -- Uncomment to draw overlap mask --
             # print(self.player.mask.overlap(block.mask, (block.rect.x -
             #      self.player.grid_x, block.rect.y - self.player.grid_y)))
             temp_surface.blit(overlap_mask.to_surface(unsetcolor=(0, 0, 0, 0), setcolor=(255, 0, 0, 255)),
                               self.camera.apply(self.player))
         return temp_surface
+
+    def render_timer(self, time: int) -> pygame.Surface:
+        font = pygame.font.SysFont('arial', 20)
+        font.set_bold(True)
+        text = str(time)
+        rendered = font.render(
+            text, False, (255, 255, 255))
+        return rendered
 
     def render_map(self) -> None:
         map_img_bot = self.game_map.make_map()
@@ -117,7 +133,6 @@ class Game:
         map_img_top.set_colorkey((0, 0, 0))
         map_rect = map_img_bot.get_rect()
         temp_surface = pygame.Surface((constants.WIDTH, constants.HEIGHT))
-        # Blit game elements onto the window
         temp_surface.blit(map_img_bot, self.camera.apply_rect(map_rect))
         temp_surface.blit(self.player.image, self.camera.apply(self.player))
         if self.show_masks:
@@ -126,6 +141,7 @@ class Game:
         return temp_surface
 
     def render_game(self, surf: pygame.Surface) -> Tuple[pygame.Surface, Tuple[int, int]]:
+        # If need to render scare screen
         if self.player.scare:
             if self.done == False:
                 pygame.mixer.music.load(media.SCARE_ROAR)
@@ -133,11 +149,21 @@ class Game:
                 pygame.mixer.music.play()
                 self.done = True
             return self.scare(), (0, 0)
+        # Otws
         surf.blit(self.render_map(), (0, 0))
         surf.blit(self.render_lights(), (0, 0),
                   special_flags=pygame.BLEND_RGBA_SUB)
+        if self.show_timer:
+            timer = self.render_timer(self.timer)
+            surf.blit(timer, (constants.WIDTH - timer.get_width(), 0))
+            # if self.timer % 2 == 0:
+            #    for i in range(10):
+            #        surf.blit(timer,
+            #                  (constants.WIDTH - timer.get_width()-(random.randint(0, constants.WIDTH/2)), random.randint(0, constants.HEIGHT)))
+            #        surf.blit(timer,
+            #                  (random.randint(0, constants.WIDTH/2), random.randint(0, constants.HEIGHT)))
         if self.player.title_screen:
-            surf.blit(media.TITLE_SCREEN_IMG, (77, 25))
+            surf.blit(media.TITLE_SCREEN_IMG, (77, 48))
         scaled_win = pygame.transform.scale(surf, (
             constants.WIDTH*constants.SCREEN_SCALING_FACTOR, constants.HEIGHT*constants.SCREEN_SCALING_FACTOR))
         return scaled_win, (340, 0)

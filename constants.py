@@ -24,6 +24,7 @@ lights = pygame.sprite.Group()
 DEATH_EVENT = pygame.event.custom_type()
 WIN_EVENT = pygame.event.custom_type()
 SHOW_MASKS_EVENT = pygame.event.custom_type()
+SHOW_TIMER_EVENT = pygame.event.custom_type()
 
 
 class Direction(Enum):

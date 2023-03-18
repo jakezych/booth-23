@@ -1,6 +1,6 @@
 from typing import Tuple
 import pygame
-from constants import Direction, GRIDSIZE, obstacles, lights,  DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT, TITLE_SCREEN_TIME, SHOW_MASKS_EVENT
+from constants import Direction, GRIDSIZE, obstacles, lights,  DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT, TITLE_SCREEN_TIME, SHOW_MASKS_EVENT, SHOW_TIMER_EVENT
 import helpers
 
 # Returns true if any point in points is colliding with any tile
@@ -39,14 +39,22 @@ class Player(pygame.sprite.Sprite):
     def load_sprites(self, filename: str = "data/sprites/booth23sprite_white.png") -> None:
         ss = helpers.spritesheet(filename, )
         self.images = {}
+        # self.images[Direction.DOWN] = ss.images_at(
+        #    [(0, 0, 16, 16), (16, 0, 16, 16), (32, 0, 16, 16)], colorkey=-1)
+        # self.images[Direction.UP] = ss.images_at(
+        #    [(112, 0, 16, 16), (96, 0, 16, 16), (0, 16, 16, 16)], colorkey=-1)
+        # self.images[Direction.RIGHT] = ss.images_at(
+        #    [(48, 0, 16, 16), (64, 0, 16, 16), (80, 0, 16, 16)], colorkey=-1)
+        # self.images[Direction.LEFT] = ss.images_at(
+        #    [(48, 16, 16, 16), (64, 16, 16, 16), (80, 16, 16, 16)], colorkey=-1)
         self.images[Direction.DOWN] = ss.images_at(
-            [(0, 0, 16, 16), (16, 0, 16, 16), (32, 0, 16, 16)], colorkey=-1)
+            [(0, 32, 16, 16), (16, 32, 16, 16), (32, 32, 16, 16)], colorkey=-1)
         self.images[Direction.UP] = ss.images_at(
-            [(112, 0, 16, 16), (96, 0, 16, 16), (0, 16, 16, 16)], colorkey=-1)
+            [(112, 32, 16, 16), (96, 32, 16, 16), (0, 48, 16, 16)], colorkey=-1)
         self.images[Direction.RIGHT] = ss.images_at(
-            [(48, 0, 16, 16), (64, 0, 16, 16), (80, 0, 16, 16)], colorkey=-1)
+            [(48, 32, 16, 16), (64, 32, 16, 16), (80, 32, 16, 16)], colorkey=-1)
         self.images[Direction.LEFT] = ss.images_at(
-            [(48, 16, 16, 16), (64, 16, 16, 16), (80, 16, 16, 16)], colorkey=-1)
+            [(48, 48, 16, 16), (64, 48, 16, 16), (80, 48, 16, 16)], colorkey=-1)
         #self.images[Direction.LEFT] = [pygame.transform.flip(x, flip_x=True, flip_y=False) for x in ss.images_at([(48, 0,16,16), (64,0,16,16), (80,0,16,16)], colorkey=-1)]
         self.image = self.images[Direction.DOWN][self.anim_step]
         self.mask = pygame.mask.from_surface(self.image)
@@ -151,6 +159,8 @@ class Player(pygame.sprite.Sprite):
             self.movement(Direction.RIGHT)
         elif keys[pygame.K_m]:
             pygame.event.post(pygame.event.Event(SHOW_MASKS_EVENT))
+        elif keys[pygame.K_t]:
+            pygame.event.post(pygame.event.Event(SHOW_TIMER_EVENT))
 
 
 class Demogorgon(pygame.sprite.Sprite):
