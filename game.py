@@ -12,7 +12,7 @@ def get_maps() -> list[tilemap.TiledMap]:
     second = tilemap.TiledMap("data/maps/second/second.tmx")
     title_map = tilemap.TiledMap("data/maps/level1/level1.tmx")
     #wood_map = tilemap.TiledMap("data/maps/title_map/title_map.tmx")
-    return [first, second, title_map][::-1]
+    return [first, second, title_map]  # [::-1]
 
 
 def load_map(tm: tilemap.TiledMap) -> sprites.Player:

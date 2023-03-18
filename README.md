@@ -22,7 +22,16 @@ Take a look at some of the existing maps in `data/maps` for an example. The impo
 | win_collide   | if player collision, send player to next level        |
 | light | Creates a spotlight to illuminate block
 
+### brainstorm
+
+* moving obstacles (level3?, defined paths, player needs to time movement)
+* different character per level depending on map (eleven in hospital, etc)
+* extras -> eggo waffles, other easter eggs
+* jumpscare audio
+* eggo -> invincibility
+
 ## todo
+
 * ~~Pixel perfect collision with Pygame masks~~
 * Add levels (1-2)
 * Texture all levels
