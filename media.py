@@ -14,5 +14,5 @@ SCARE_ROAR = 'data/music/scare.mp3'
 
 # MISC
 PLAYER_5 = pygame.transform.scale_by(
-    pygame.image.load('data/spotlights/spotlight7.png'), 1)
+    pygame.image.load('data/spotlights/spotlight7.png'), 2)
 LIGHT_FILTER = pygame.surface.Surface((constants.WIDTH, constants.HEIGHT))

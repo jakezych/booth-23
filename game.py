@@ -12,8 +12,11 @@ def get_maps() -> list[tilemap.TiledMap]:
     first = tilemap.TiledMap("data/maps/first/first.tmx")
     second = tilemap.TiledMap("data/maps/second/second.tmx")
     title_map = tilemap.TiledMap("data/maps/level1/level1.tmx")
+    hospital = tilemap.TiledMap("data/maps/hospital/hospital.tmx")
+    forest = tilemap.TiledMap("data/maps/forest/forest.tmx")
     #wood_map = tilemap.TiledMap("data/maps/title_map/title_map.tmx")
-    return [first, second, title_map]  # [::-1]
+    # return [forest, hospital, first, second, title_map]  # [::-1]
+    return [first, second, title_map]
 
 
 def load_map(tm: tilemap.TiledMap) -> sprites.Player:
@@ -93,10 +96,10 @@ class Game:
         # -192 shifts center of light to center of player sprite
         media.LIGHT_FILTER.blit(
             # more negative is closer to top left
-            media.PLAYER_5, self.camera.apply_offset(self.player, -(192), -(192)))
+            media.PLAYER_5, self.camera.apply_offset(self.player, -(2*192), -(2*192)))
         for l in pygame.sprite.Group.sprites(constants.lights):
             media.LIGHT_FILTER.blit(
-                media.PLAYER_5, self.camera.apply_offset(l, -192, -192))
+                media.PLAYER_5, self.camera.apply_offset(l, -2*192, -2*192))
         return media.LIGHT_FILTER
 
     def render_masks(self, temp_surface: pygame.Surface) -> pygame.Surface:
