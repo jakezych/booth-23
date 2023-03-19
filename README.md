@@ -27,7 +27,7 @@ Take a look at some of the existing maps in `data/maps` for an example. The impo
 * moving obstacles (level3?, defined paths, player needs to time movement)
 * different character per level depending on map (eleven in hospital, etc)
 * extras -> eggo waffles, other easter eggs
-* jumpscare audio
+* ~~jumpscare audio~~
 * eggo -> invincibility
 
 ## todo
@@ -45,3 +45,11 @@ Take a look at some of the existing maps in `data/maps` for an example. The impo
   * faster and faster as the levels progress
   * parallel of candle for demagorgon, glowing red eyes around it
   * teleports closer and closer to the player
+
+
+### title screen and level display
+* At the beginning of each level, show "LEVEL 1: THE HOSPITAL" or something to that effect
+* At the very first level, add the smallest hint of story. "Eleven wakes up in the Hawkins Lab with a vision... the demogorgon is coming.." RUN!
+* * or something like that idk dawg
+* * Add way to restart game on end screen
+* * Post jumpscare, show thanks for playing & credits scene. 
