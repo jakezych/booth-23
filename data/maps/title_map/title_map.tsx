@@ -6,7 +6,7 @@
    <frame tileid="56" duration="100"/>
    <frame tileid="57" duration="100"/>
    <frame tileid="96" duration="100"/>
-   <frame tileid="97" duration="100"/>
+   <frame tileid="97" duration="51"/>
   </animation>
  </tile>
 </tileset>
