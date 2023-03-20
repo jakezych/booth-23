@@ -129,10 +129,10 @@ class Game:
                               self.camera.apply(self.player))
         return temp_surface
 
-    def render_num(self, time: int, prefix: str) -> pygame.Surface:
+    def render_num(self, time: int, prefix: str = '', suffix: str = '') -> pygame.Surface:
         font = pygame.font.SysFont('arial', 15)
         font.set_bold(True)
-        text = prefix + str(time)
+        text = prefix + str(time) + suffix
         rendered = font.render(
             text, False, (255, 0, 0))
         return rendered
@@ -164,16 +164,19 @@ class Game:
         surf.blit(self.render_map(), (0, 0))
         surf.blit(self.render_lights(), (0, 0),
                   special_flags=pygame.BLEND_RGBA_SUB)
-        timer = self.render_num(self.timer, prefix='')
+        timer = self.render_num(self.timer)
+        timer = self.render_num(self.player.anim_step, prefix='', suffix='m')
         if self.show_timer:
             surf.blit(timer, (constants.WIDTH - timer.get_width(), 0))
 
-        deaths = self.render_num(self.deaths, prefix="deaths  ")
-        surf.blit(deaths, (constants.WIDTH -
-                  deaths.get_width(), deaths.get_height()))
+        deaths = self.render_num(self.deaths, prefix="deaths ")
+        surf.blit(deaths, (
+                  0, 0))
 
         if self.player.show_title_screen:
-            surf.blit(media.TITLE_SCREEN_IMG, (77, 48))
+            surf.blit(media.TITLE_SCREEN_IMG, ((constants.WIDTH//2) -
+                      (media.TITLE_SCREEN_IMG.get_width()//2), ((constants.HEIGHT//3) -
+                      (media.TITLE_SCREEN_IMG.get_height()//2))))
         surf.blit(self.fader.draw(), (0, 0))
         scaled_win = pygame.transform.scale(surf, (
             constants.WIDTH*constants.SCREEN_SCALING_FACTOR, constants.HEIGHT*constants.SCREEN_SCALING_FACTOR))

@@ -5,7 +5,8 @@ import constants
 TITLE_SCREEN_PATH = 'data/sprites/title.png'
 SCARE_IMG_PATH = 'data/sprites/scare.png'
 
-TITLE_SCREEN_IMG = pygame.image.load(TITLE_SCREEN_PATH)
+TITLE_SCREEN_IMG = pygame.transform.scale_by(
+    pygame.image.load(TITLE_SCREEN_PATH), 1.5)
 SCARE_IMG = pygame.image.load(SCARE_IMG_PATH)
 
 # Audio
