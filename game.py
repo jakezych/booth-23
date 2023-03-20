@@ -51,7 +51,7 @@ class Game:
         self.camera = tilemap.Camera(self.game_map.width, self.game_map.height)
         self.show_masks = False
         self.timer = 0
-        self.show_timer = False
+        self.show_timer = True
         self.show_deaths = True
         self.done = False
         self.fader = animations.Fader()
