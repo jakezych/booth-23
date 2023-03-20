@@ -32,6 +32,8 @@ class Direction(Enum):
     RIGHT = 2
     LEFT = 3
     DOWN = 4
+    OUT = 5
+    IN = 6
 
 
 class BlockType(Enum):

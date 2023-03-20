@@ -1,9 +1,7 @@
 from typing import Tuple
 import pygame
-from constants import Direction, GRIDSIZE, obstacles, lights,  DEATH_EVENT, ANIM_SPEED, BlockType, WIN_EVENT, TITLE_SCREEN_TIME, SHOW_MASKS_EVENT, SHOW_TIMER_EVENT
+from constants import *
 import helpers
-
-# Returns true if any point in points is colliding with any tile
 
 
 def is_colliding_masks(player, new_x: int, new_y: int, tiles: pygame.sprite.Group) -> BlockType:
@@ -32,7 +30,7 @@ class Player(pygame.sprite.Sprite):
         self.load_sprites()
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.grid_x, self.grid_y)
-        self.title_screen = True
+        self.show_title_screen = True
         self.scare_on_next = False
         self.scare = False
 
@@ -77,8 +75,8 @@ class Player(pygame.sprite.Sprite):
     def movement(self, direction: Direction) -> None:
         death_event = pygame.event.Event(DEATH_EVENT)
         win_event = pygame.event.Event(WIN_EVENT)
-        if self.anim_step > TITLE_SCREEN_TIME:
-            self.title_screen = False
+        if self.show_title_screen and self.anim_step > TITLE_SCREEN_TIME:
+            self.show_title_screen = False
             # self.scare_on_next = True
         match direction:
             case Direction.UP:

@@ -6,20 +6,19 @@ import sys
 from typing import Tuple
 import media
 import random
+import animations
 
 
-def get_maps() -> list[tilemap.TiledMap]:
-    first = tilemap.TiledMap("data/maps/first/first.tmx")
-    second = tilemap.TiledMap("data/maps/second/second.tmx")
-    title_map = tilemap.TiledMap("data/maps/level1/level1.tmx")
-    hospital = tilemap.TiledMap("data/maps/hospital/hospital.tmx")
-    forest = tilemap.TiledMap("data/maps/forest/forest.tmx")
-    #wood_map = tilemap.TiledMap("data/maps/title_map/title_map.tmx")
-    # return [forest, hospital, first, second, title_map]  # [::-1]
-    return [first, second, title_map]
+def get_maps() -> list[tilemap.GameMap]:
+    first = tilemap.GameMap("data/maps/first/first.tmx", 0, None)
+    second = tilemap.GameMap("data/maps/second/second.tmx", 0, None)
+    third = tilemap.GameMap("data/maps/level1/level1.tmx", 0, None)
+    #hospital = tilemap.TiledMap("data/maps/hospital/hospital.tmx", 0, None)
+    #forest = tilemap.TiledMap("data/maps/forest/forest.tmx", 0, None)
+    return [first, second, third]
 
 
-def load_map(tm: tilemap.TiledMap) -> sprites.Player:
+def load_map(tm: tilemap.GameMap) -> sprites.Player:
     player = None
     for obj in tm.tmxdata.objects:
         if obj.name == 'player_spawn':
@@ -45,16 +44,19 @@ def load_map(tm: tilemap.TiledMap) -> sprites.Player:
 class Game:
     def __init__(self, screen_width, screen_height) -> None:
         self.maps = get_maps()
-        self.screen_w = screen_width
-        self.screen_h = screen_height
+        self.screen_w, self.screen_h = screen_width, screen_height
         self.active_map = 0
         self.game_map = self.maps[self.active_map]
         self.player = load_map(self.game_map)
         self.camera = tilemap.Camera(self.game_map.width, self.game_map.height)
         self.show_masks = False
-        self.show_timer = False
-        self.done = False
         self.timer = 0
+        self.show_timer = False
+        self.show_deaths = True
+        self.done = False
+        self.fader = animations.Fader()
+        self.fader.activate(dir=constants.Direction.IN)
+        self.deaths = 0
 
     def process_events(self) -> None:
         events = pygame.event.get()
@@ -62,10 +64,12 @@ class Game:
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == constants.DEATH_EVENT:
+                self.deaths += 1
                 self.player.grid_x = self.player.spawn_x
                 self.player.grid_y = self.player.spawn_y
                 self.player.dir = constants.Direction.UP
                 self.player.anim_step = 0
+                self.fader.activate(constants.Direction.IN)
                 #self.player.title_screen = True
             elif event.type == constants.WIN_EVENT:
                 self.change_map()
@@ -78,6 +82,7 @@ class Game:
         self.timer += 1
         self.player.update()
         self.camera.update(self.player)
+        self.fader.update()
 
     def change_map(self) -> None:
         pygame.sprite.Group.empty(constants.obstacles)
@@ -89,6 +94,8 @@ class Game:
             self.game_map.width, self.game_map.height)
         self.player.scare = False
         self.player.scare_on_next = False
+        self.player.show_title_screen = False
+        self.fader.activate(constants.Direction.IN)
 
     def render_lights(self) -> None:
         # Blit lighting filter (should actually be after??)
@@ -122,25 +129,26 @@ class Game:
                               self.camera.apply(self.player))
         return temp_surface
 
-    def render_timer(self, time: int) -> pygame.Surface:
-        font = pygame.font.SysFont('arial', 20)
+    def render_num(self, time: int, prefix: str) -> pygame.Surface:
+        font = pygame.font.SysFont('arial', 15)
         font.set_bold(True)
-        text = str(time)
+        text = prefix + str(time)
         rendered = font.render(
-            text, False, (255, 255, 255))
+            text, False, (255, 0, 0))
         return rendered
 
     def render_map(self) -> None:
-        map_img_bot = self.game_map.make_map()
-        map_img_top = self.game_map.make_map_top()
-        map_img_top.set_colorkey((0, 0, 0))
-        map_rect = map_img_bot.get_rect()
         temp_surface = pygame.Surface((constants.WIDTH, constants.HEIGHT))
-        temp_surface.blit(map_img_bot, self.camera.apply_rect(map_rect))
+        bottom_layer = self.game_map.draw_layer(None)
+        temp_surface.blit(bottom_layer, self.camera.apply_rect(
+            bottom_layer.get_rect()))
         temp_surface.blit(self.player.image, self.camera.apply(self.player))
         if self.show_masks:
             temp_surface = self.render_masks(temp_surface)
-        temp_surface.blit(map_img_top, self.camera.apply_rect(map_rect))
+        top_layer = self.game_map.draw_layer('treetop')
+        top_layer.set_colorkey((0, 0, 0))
+        temp_surface.blit(top_layer,
+                          self.camera.apply_rect(top_layer.get_rect()))
         return temp_surface
 
     def render_game(self, surf: pygame.Surface) -> Tuple[pygame.Surface, Tuple[int, int]]:
@@ -156,17 +164,17 @@ class Game:
         surf.blit(self.render_map(), (0, 0))
         surf.blit(self.render_lights(), (0, 0),
                   special_flags=pygame.BLEND_RGBA_SUB)
+        timer = self.render_num(self.timer, prefix='')
         if self.show_timer:
-            timer = self.render_timer(self.timer)
             surf.blit(timer, (constants.WIDTH - timer.get_width(), 0))
-            # if self.timer % 2 == 0:
-            #    for i in range(10):
-            #        surf.blit(timer,
-            #                  (constants.WIDTH - timer.get_width()-(random.randint(0, constants.WIDTH/2)), random.randint(0, constants.HEIGHT)))
-            #        surf.blit(timer,
-            #                  (random.randint(0, constants.WIDTH/2), random.randint(0, constants.HEIGHT)))
-        if self.player.title_screen:
+
+        deaths = self.render_num(self.deaths, prefix="deaths  ")
+        surf.blit(deaths, (constants.WIDTH -
+                  deaths.get_width(), deaths.get_height()))
+
+        if self.player.show_title_screen:
             surf.blit(media.TITLE_SCREEN_IMG, (77, 48))
+        surf.blit(self.fader.draw(), (0, 0))
         scaled_win = pygame.transform.scale(surf, (
             constants.WIDTH*constants.SCREEN_SCALING_FACTOR, constants.HEIGHT*constants.SCREEN_SCALING_FACTOR))
         return scaled_win, (340, 0)

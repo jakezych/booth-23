@@ -1,6 +1,6 @@
 import pytmx
 import pygame
-from constants import WIDTH, HEIGHT
+from constants import *
 
 
 class TiledMap:
@@ -10,34 +10,27 @@ class TiledMap:
         self.height = tm.height * tm.tileheight
         self.tmxdata = tm
 
-    def render(self, surface: pygame.SurfaceType, filter: str = 'treetop') -> None:
+    def blit_layer(self, surface, filter) -> None:
         ti = self.tmxdata.get_tile_image_by_gid
         for layer in self.tmxdata.visible_layers:
-            if isinstance(layer, pytmx.TiledTileLayer) and layer.name != filter:
-                for x, y, gid, in layer:
-                    tile = ti(gid)
-                    if tile:
-                        surface.blit(tile, (x * self.tmxdata.tilewidth,
-                                            y * self.tmxdata.tileheight))
+            if filter != None:
+                if isinstance(layer, pytmx.TiledTileLayer) and layer.name == filter:
+                    for x, y, gid, in layer:
+                        tile = ti(gid)
+                        if tile:
+                            surface.blit(tile, (x * self.tmxdata.tilewidth,
+                                                y * self.tmxdata.tileheight))
+            else:
+                if isinstance(layer, pytmx.TiledTileLayer):
+                    for x, y, gid, in layer:
+                        tile = ti(gid)
+                        if tile:
+                            surface.blit(tile, (x * self.tmxdata.tilewidth,
+                                                y * self.tmxdata.tileheight))
 
-    def render_top(self, surface: pygame.Surface, filter: str = 'treetop') -> None:
-        ti = self.tmxdata.get_tile_image_by_gid
-        for layer in self.tmxdata.visible_layers:
-            if isinstance(layer, pytmx.TiledTileLayer) and layer.name == filter:
-                for x, y, gid, in layer:
-                    tile = ti(gid)
-                    if tile:
-                        surface.blit(tile, (x * self.tmxdata.tilewidth,
-                                            y * self.tmxdata.tileheight))
-
-    def make_map(self) -> pygame.Surface:
+    def draw_layer(self, filter='treetop') -> pygame.Surface:
         temp_surface = pygame.Surface((self.width, self.height))
-        self.render(temp_surface)
-        return temp_surface
-
-    def make_map_top(self) -> pygame.Surface:
-        temp_surface = pygame.Surface((self.width, self.height))
-        self.render_top(temp_surface)
+        self.blit_layer(temp_surface, filter)
         return temp_surface
 
 
@@ -72,3 +65,13 @@ class Camera:
         y = max(-(self.height - HEIGHT), y)  # bottom
         # print(x,y)
         self.camera = pygame.Rect(x, y, self.width, self.height)
+
+
+class GameMap(TiledMap):
+    def __init__(self, filename: str, level_id: int, desc_image: pygame.Surface) -> None:
+        TiledMap.__init__(self, filename=filename)
+        self.level_id = level_id
+        self.image = desc_image
+
+    def draw_description(self):
+        return self.image
