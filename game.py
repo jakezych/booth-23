@@ -165,7 +165,7 @@ class Game:
         surf.blit(self.render_lights(), (0, 0),
                   special_flags=pygame.BLEND_RGBA_SUB)
         timer = self.render_num(self.timer)
-        timer = self.render_num(self.player.anim_step, prefix='', suffix='m')
+        #timer = self.render_num(self.player.anim_step, prefix='', suffix='m')
         if self.show_timer:
             surf.blit(timer, (constants.WIDTH - timer.get_width(), 0))
 
