@@ -164,23 +164,52 @@ class Game:
         surf.blit(self.render_map(), (0, 0))
         surf.blit(self.render_lights(), (0, 0),
                   special_flags=pygame.BLEND_RGBA_SUB)
-        timer = self.render_num(self.timer)
-        #timer = self.render_num(self.player.anim_step, prefix='', suffix='m')
-        if self.show_timer:
-            surf.blit(timer, (constants.WIDTH - timer.get_width(), 0))
-
-        deaths = self.render_num(self.deaths, prefix="deaths ")
-        surf.blit(deaths, (
-                  0, 0))
 
         if self.player.show_title_screen:
             surf.blit(media.TITLE_SCREEN_IMG, ((constants.WIDTH//2) -
                       (media.TITLE_SCREEN_IMG.get_width()//2), ((constants.HEIGHT//3) -
                       (media.TITLE_SCREEN_IMG.get_height()//2))))
+        surf.blit(self.render_hud(), (0, 0))
         surf.blit(self.fader.draw(), (0, 0))
+
         scaled_win = pygame.transform.scale(surf, (
             constants.WIDTH*constants.SCREEN_SCALING_FACTOR, constants.HEIGHT*constants.SCREEN_SCALING_FACTOR))
         return scaled_win, (340, 0)
+
+    def render_hud(self) -> None:
+        temp_surface = pygame.Surface(
+            (constants.WIDTH, constants.HEIGHT))
+        # Render deaths:
+        deaths_label = self.render_text("DEATHS")
+        temp_surface.blit(deaths_label, (0, 25))
+        deaths = self.render_text(str(self.deaths))
+        temp_surface.blit(deaths, (0, deaths_label.get_height()+25))
+        # Render
+        level_label = self.render_text("LVL")
+        level = self.render_text(str(self.active_map))
+        temp_surface.blit(level_label, (constants.WIDTH//2 -
+                                        (level_label.get_width()//2), 25))
+        temp_surface.blit(level, (constants.WIDTH//2 -
+                                  (level_label.get_width()//2), level_label.get_height() + 25))
+
+        # Render
+        timer = self.render_text(str(self.timer))
+        if self.show_timer:
+            time_label = self.render_text("TIME")
+            temp_surface.blit(
+                time_label, (constants.WIDTH - time_label.get_width(), 25))
+            temp_surface.blit(timer, (constants.WIDTH -
+                                      timer.get_width(), time_label.get_height() + 25))
+        temp_surface.set_colorkey(constants.BLACK)
+        return temp_surface
+
+    def render_text(self, text: str) -> pygame.Surface:
+        font = pygame.font.Font('data/font.ttf', 8)
+        font.set_bold(False)
+        font.set_italic(True)
+        rendered = font.render(
+            text, False, (255, 0, 0))
+        return rendered
 
     def scare(self) -> pygame.Surface:
         scare = pygame.image.load(media.SCARE_IMG_PATH)
