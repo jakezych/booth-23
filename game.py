@@ -172,9 +172,15 @@ class Game:
         surf.blit(self.render_hud(), (0, 0))
         surf.blit(self.fader.draw(), (0, 0))
 
-        scaled_win = pygame.transform.scale(surf, (
-            constants.WIDTH*constants.SCREEN_SCALING_FACTOR, constants.HEIGHT*constants.SCREEN_SCALING_FACTOR))
-        return scaled_win, (340, 0)
+        pygame.transform.scale(
+            surf, (self.screen_h, self.screen_h))
+
+        sidebar_width = (self.screen_w - self.screen_h)//2
+
+        scaled_win = pygame.transform.scale(
+            surf, (self.screen_h, self.screen_h))
+
+        return scaled_win, (sidebar_width, 0)
 
     def render_hud(self) -> None:
         temp_surface = pygame.Surface(
