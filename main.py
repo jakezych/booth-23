@@ -14,8 +14,8 @@ def main() -> None:
     # Play music
     size = constants.WIDTH, constants.HEIGHT
     info = pygame.display.Info()
-    screen_w = 1800
-    screen_h = 1169
+    screen_w = info.current_w
+    screen_h = info.current_h
     print(screen_w, screen_h)
     window = pygame.Surface(size)
     screen = pygame.display.set_mode(
