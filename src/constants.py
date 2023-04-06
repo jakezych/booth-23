@@ -1,6 +1,9 @@
 from enum import Enum
 import pygame as pg
 
+pg.init()
+FULLSCREEN = False
+
 GAME_WIDTH = 320
 GAME_HEIGHT = 320
 
@@ -58,3 +61,6 @@ MAP1_TEXT = [
     "Eleven: ...",
     "Hopper's Voice: Trust your instincts and your powers. I believe in you, kid.",
     "Eleven: I will do my best, Hopper."]
+
+GAME_FONT_8 = pg.font.Font('./resources/fonts/font.ttf', 8)
+GAME_FONT_10 = pg.font.Font('./resources/fonts/font.ttf', 10)

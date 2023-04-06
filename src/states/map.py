@@ -204,8 +204,8 @@ class Map(GameState):
 
         lights = self.render_lights()
         surf.blit(lights, (0, 0), special_flags=pg.BLEND_RGBA_MULT)
-        #hud = self.render_hud()
-        #surf.blit(hud, (0, 0))
+        hud = self.render_hud()
+        surf.blit(hud, (0, 0))
 
         surf.blit(self.fader.draw(), (0, 0))
 
