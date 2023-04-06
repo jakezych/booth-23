@@ -57,7 +57,11 @@ class Map(GameState):
         self.camera = tilemap.Camera(self.map.width, self.map.height)
         self.show_timer = True
         self.fire_effect = animations.DoomTile()
-        self.text_box = animations.TextBox(MAP1_TEXT, font_size=10)
+        self.first_level = False
+        if map_path == "./resources/maps/hospital.tmx":
+            print("ayo", next_state)
+            self.first_level = True
+            self.text_box = animations.TextBox(MAP1_TEXT, font_size=8)
 
     def startup(self, persistent):
         self.persist = persistent
@@ -68,7 +72,8 @@ class Map(GameState):
         self.player, self.fire_coords = load_map(self.map)
         self.fader = animations.Fader()
         self.fader.activate(dir=Direction.IN)
-        self.text_box.start()
+        if self.first_level:
+            self.text_box.start()
         self.player.dir = Direction.DOWN
 
     def get_event(self, event):
@@ -78,7 +83,7 @@ class Map(GameState):
             if event.key == pg.K_ESCAPE:
                 self.quit = True
                 return
-            if event.key == pg.K_RETURN:
+            if self.first_level and event.key == pg.K_RETURN:
                 if self.text_box.paused:
                     self.text_box.paused = False
                     self.text_box.advance_message()
@@ -109,7 +114,8 @@ class Map(GameState):
             self.camera.update(self.player)
             self.fire_effect.update_fire_effect()
             self.fader.update()
-            self.text_box.update(dt)
+            if self.first_level:
+                self.text_box.update(dt)
 
     # def render_fire(self):
     #     temp_surface = pg.Surface((GAME_WIDTH, GAME_HEIGHT)).convert_alpha()
@@ -203,8 +209,10 @@ class Map(GameState):
 
         surf.blit(self.fader.draw(), (0, 0))
 
-        if self.text_box.active:
+        if self.first_level and self.text_box.active:
             surf.blit(self.text_box.draw(), (0, 0))
+        else:
+            self.player.can_move = True
 
         sidebar_width = (INFO.current_w - INFO.current_h)//2
         scaled_win = pg.transform.scale(

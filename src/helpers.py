@@ -7,8 +7,8 @@ def clamp(n, minn, maxn):
 
 def render_text(text: str, size=8, color=(255, 0, 0)) -> pg.Surface:
     font = pg.font.Font('./resources/fonts/font.ttf', size)
-   # font.set_bold(False)
-  #  font.set_italic(True)
+    # font.set_bold(True)
+    # font.set_italic(True)
     rendered = font.render(
         text, False, color)
     return rendered

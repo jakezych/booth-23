@@ -31,6 +31,10 @@ class Player(pg.sprite.Sprite):
         self.rect.topleft = (self.grid_x, self.grid_y)
         self.show_title_screen = True
         self.scare_on_next = False
+        self.can_move = False
+
+    def toggle_move(self):
+        self.can_move = not self.can_move
 
     def load_sprites(self, filename: str = "./resources/sprites/booth23sprite_white.png"):
         ss = helpers.spritesheet(filename, )
@@ -50,7 +54,8 @@ class Player(pg.sprite.Sprite):
     def update(self) -> None:
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.grid_x, self.grid_y)
-        self.keys()
+        if self.can_move:
+            self.keys()
         self.mask = pg.mask.from_surface(self.image)
 
     def test_collision_masks(self, direction: Direction, new_x: int, new_y: int, tiles: pg.sprite.Group) -> int:
