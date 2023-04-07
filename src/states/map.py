@@ -71,7 +71,7 @@ class Map(GameState):
         pg.sprite.Group.empty(lights)
         self.player, self.fire_coords = load_map(self.map)
         self.fader = animations.Fader()
-        self.fader.activate(dir=Direction.IN)
+        self.fader.activate(dir=Direction.IN, speed=4)
         self.next_state = self.fixed_next_state
         if self.first_level:
             self.text_box.reset()
@@ -79,7 +79,6 @@ class Map(GameState):
             self.next_state = "MAP2"  # TOOD: remove once working solution
         self.player.dir = Direction.DOWN
         self.paused = False
-        print("after", self.persist)
 
     def get_event(self, event):
         if event.type == pg.QUIT:
@@ -178,7 +177,7 @@ class Map(GameState):
         temp_surface = pg.surface.Surface(
             (GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
 
-        #temp_surface.fill((255, 255, 255, 255))
+        # temp_surface.fill((255, 255, 255, 255))
         # -192 shifts center of light to center of player sprite
         temp_surface.blit(
             # more negative is closer to top left
@@ -194,7 +193,7 @@ class Map(GameState):
         # Render deaths:
         deaths_label = render_text("DEATHS")
         temp_surface.blit(deaths_label, (0, 25))
-        #deaths = render_text(str(self.deaths))
+        # deaths = render_text(str(self.deaths))
         deaths = render_text(str(self.persist['deaths']))
         temp_surface.blit(deaths, (0, deaths_label.get_height()+25))
         # Render

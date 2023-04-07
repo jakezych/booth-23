@@ -4,6 +4,7 @@ from ..constants import GAME_HEIGHT, GAME_WIDTH
 
 FONT_PATH = "./resources/fonts/font.ttf"
 TITLE_SCREEN_PATH = "./resources/images/title.png"
+SCOTTY_PATH = "./resources/images/scotty.png"
 
 
 class CreditScreen(GameState):
@@ -33,10 +34,12 @@ class CreditScreen(GameState):
 
         ]
         self.y_offset = 80
-        self.scroll_speed = 0.5
+        self.scroll_speed = 1
         self.font_size = 12
         self.title = pg.transform.scale_by(
             pg.image.load(TITLE_SCREEN_PATH), 1.5)
+        self.scotty = pg.transform.scale_by(
+            pg.image.load(SCOTTY_PATH), 2.75)
 
     def startup(self, persistent):
         self.persist = persistent
@@ -61,9 +64,15 @@ class CreditScreen(GameState):
         INFO = pg.display.Info()
         surf = pg.Surface((GAME_WIDTH, GAME_HEIGHT))
         font = pg.font.FontType(FONT_PATH, self.font_size)
+
         title_rect = self.title.get_rect(
             center=(GAME_WIDTH//2, GAME_HEIGHT - self.y_offset - (6 * self.title.get_height()//8)))
         surf.blit(self.title, title_rect)
+
+        scotty_rect = self.scotty.get_rect(center=(
+            GAME_WIDTH//2, 600 + GAME_HEIGHT - self.y_offset - (6 * self.title.get_height()//8)))
+        surf.blit(self.scotty, scotty_rect)
+
         for i, line in enumerate(self.credits_list):
             text_surface = font.render(line, True, (255, 255, 255))
             text_rect = text_surface.get_rect(

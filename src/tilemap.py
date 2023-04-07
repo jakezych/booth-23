@@ -31,7 +31,7 @@ class TiledMap:
     def draw_layer(self, filter='treetop') -> pygame.Surface:
         temp_surface = pygame.Surface(
             (self.width, self.height), pygame.SRCALPHA)
-        #temp_surface.fill((0, 0, 0, 0))
+        # temp_surface.fill((0, 0, 0, 0))
         self.blit_layer(temp_surface, filter)
         return temp_surface
 
@@ -56,7 +56,7 @@ class Camera:
 
     def update(self, target: pygame.sprite.Sprite) -> None:
         # set x and y position of camera
-        #print(target.rect.centerx," ", int(WIDTH / 2))
+        # print(target.rect.centerx," ", int(WIDTH / 2))
         x = -target.rect.centerx + int(constants.GAME_WIDTH / 2)
         y = -target.rect.centery + int(constants.GAME_HEIGHT / 2)
 

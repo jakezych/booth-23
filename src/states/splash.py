@@ -13,8 +13,8 @@ class SplashScreen(GameState):
             pg.image.load(TITLE_SCREEN_PATH), 1.5)
         self.title_rect = self.title.get_rect(
             center=(GAME_WIDTH//2, GAME_HEIGHT//2 - 50))
-        #self.next_state = "MAP1"
-        #self.next_state = "MAP2"
+        # self.next_state = "MAP1"
+        # self.next_state = "MAP2"
         self.next_state = "HOSPITAL"
         # Add blinking text
         self.blinking_text = render_text("PRESS START", 10)
@@ -41,7 +41,8 @@ class SplashScreen(GameState):
             if event.key == pg.K_ESCAPE:
                 self.quit = True
                 return
-            keys = [pg.K_LEFT, pg.K_RIGHT, pg.K_UP, pg.K_DOWN]
+            # keys = [pg.K_LEFT, pg.K_RIGHT, pg.K_UP, pg.K_DOWN]
+            keys = [pg.K_RETURN]
             if event.key in keys:
                 self.done = True
 

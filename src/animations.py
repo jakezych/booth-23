@@ -57,14 +57,12 @@ class DoomTile(pg.sprite.Sprite):
         surface.blit(self.fire_surface, (x, y))
 
 
-FADE_SPEED = 8
-
-
 class Fader:
     def __init__(self, dir: Direction = Direction.OUT):
         self.alpha = 0 if dir == Direction.OUT else 255
         self.direction = dir
         self.active = False
+        self.speed = 8
 
     # FADING TO BLACK - DIRECTION IS OUT
     # START AT ALPHA 0 IS TRANSPARENT START AT 0
@@ -77,12 +75,12 @@ class Fader:
                     self.activate(Direction.IN)
                     return
                 else:
-                    self.alpha += FADE_SPEED * 2
+                    self.alpha += self.speed * 2
             elif self.dir == Direction.IN:
                 if self.alpha <= 0:
                     self.active = False
                 else:
-                    self.alpha -= FADE_SPEED
+                    self.alpha -= self.speed
 
     def draw(self):
         temp_surface = pg.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
@@ -92,10 +90,11 @@ class Fader:
         temp_surface.fill((0, 0, 0, clamp(alpha, 0, 255)))
         return temp_surface
 
-    def activate(self, dir):
+    def activate(self, dir, speed=8):
         self.active = True
         self.dir = dir
         self.alpha = 0 if dir == Direction.OUT else 255
+        self.speed = speed
 
 
 class TextBox:
