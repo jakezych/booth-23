@@ -110,7 +110,7 @@ class TextBox:
         self.speed = speed
         self.active = False
         self.text_box_image = pg.image.load(
-            "resources/images/text_box.png").convert_alpha()
+            "resources/images/text_box_new.png").convert_alpha()
 
     def start(self):
         self.active = True
@@ -145,7 +145,7 @@ class TextBox:
     def draw(self):
         temp_surface = pg.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
         self.text_box_image = pg.image.load(
-            "resources/images/text_box.png").convert_alpha()
+            "resources/images/text_box_new.png").convert_alpha()
 
         message = self.messages[self.current_message][:self.current_character]
         words = message.split(' ')
