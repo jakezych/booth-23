@@ -34,7 +34,7 @@ class CreditScreen(GameState):
 
         ]
         self.y_offset = 80
-        self.scroll_speed = 1
+        self.scroll_speed = 0.5
         self.font_size = 12
         self.title = pg.transform.scale_by(
             pg.image.load(TITLE_SCREEN_PATH), 1.5)
@@ -54,7 +54,7 @@ class CreditScreen(GameState):
 
     def update(self, dt):
         self.y_offset += self.scroll_speed
-        if self.y_offset > 700:
+        if self.y_offset > 1000:
             self.y_offset = 0
             self.done = True
             self.persist["deaths"] = 0
@@ -63,7 +63,7 @@ class CreditScreen(GameState):
     def draw(self, surface):
         INFO = pg.display.Info()
         surf = pg.Surface((GAME_WIDTH, GAME_HEIGHT))
-        font = pg.font.FontType(FONT_PATH, self.font_size)
+        font = pg.font.Font(FONT_PATH, self.font_size)
 
         title_rect = self.title.get_rect(
             center=(GAME_WIDTH//2, GAME_HEIGHT - self.y_offset - (6 * self.title.get_height()//8)))
@@ -74,7 +74,7 @@ class CreditScreen(GameState):
         surf.blit(self.scotty, scotty_rect)
 
         for i, line in enumerate(self.credits_list):
-            text_surface = font.render(line, True, (255, 255, 255))
+            text_surface = font.render(line, False, (255, 255, 255))
             text_rect = text_surface.get_rect(
                 center=(GAME_WIDTH // 2, GAME_HEIGHT - self.y_offset + i * self.font_size * 1.5))
             surf.blit(text_surface, text_rect)

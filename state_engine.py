@@ -13,6 +13,9 @@ if __name__ == "__main__":
         screen = pg.display.set_mode(
             (INFO.current_w, INFO.current_h-50))
     pg.display.set_caption(WINDOW_CAPTION)
+    pg.joystick.init()
+    joysticks = [pg.joystick.Joystick(
+        x) for x in range(pg.joystick.get_count())]
     states = {"MAP1": map.Map("./resources/maps/map1.tmx", "MAP2"),
               "MAP2": map.Map("./resources/maps/map2.tmx", "MAP3"),
               "MAP3": map.Map("./resources/maps/map3.tmx", "CREDITS"),
