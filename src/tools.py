@@ -1,5 +1,6 @@
 import pygame as pg
 
+STATES = {"MAP2": "HOSPITAL", "MAP3": "MAP2", "CREDITS": "MAP3"}
 
 class GameControl(object):
     """
@@ -40,6 +41,9 @@ class GameControl(object):
         """Switch to the next game state."""
         current_state = self.state_name
         next_state = self.state.next_state
+        if self.state.persist.get("restarted"):
+            self.state.next_state = STATES[self.state.persist["restarted"]]
+            self.state.persist["restarted"] = None
         self.state.done = False
         self.state_name = next_state
         persistent = self.state.persist

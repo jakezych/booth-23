@@ -76,9 +76,10 @@ class Map(GameState):
         if self.first_level:
             self.text_box.reset()
             self.text_box.start()
-            self.next_state = "MAP2"
+            self.next_state = "MAP2"  # TOOD: remove once working solution
         self.player.dir = Direction.DOWN
         self.paused = False
+        print("after", self.persist)
 
     def get_event(self, event):
         if event.type == pg.QUIT:
@@ -88,6 +89,8 @@ class Map(GameState):
                 self.quit = True
                 return
             if self.paused and event.key == pg.K_RSHIFT:  # restart
+                # save what the next state would have been to fix it in flip_state
+                self.persist["restarted"] = self.next_state
                 self.next_state = "HOSPITAL"
                 self.done = True
                 self.persist["deaths"] = 0
