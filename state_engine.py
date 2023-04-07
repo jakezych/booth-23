@@ -2,7 +2,7 @@ import sys
 import pygame as pg
 from src.tools import GameControl
 from src.states import gameplay, map, splash, credits, doom_test, scare
-from src.constants import FULLSCREEN
+from src.constants import FULLSCREEN, WINDOW_CAPTION
 
 if __name__ == "__main__":
     INFO = pg.display.Info()
@@ -12,7 +12,6 @@ if __name__ == "__main__":
     else:
         screen = pg.display.set_mode(
             (INFO.current_w, INFO.current_h-50))
-    from src.constants import WINDOW_CAPTION
     pg.display.set_caption(WINDOW_CAPTION)
     states = {"MAP1": map.Map("./resources/maps/map1.tmx", "MAP2"),
               "MAP2": map.Map("./resources/maps/map2.tmx", "MAP3"),

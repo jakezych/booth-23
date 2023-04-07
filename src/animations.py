@@ -135,6 +135,7 @@ class TextBox:
 
     def reset(self):
         self.current_message = 0
+        self.current_character = 0
 
     def update(self, dt):
         if not self.active:

@@ -70,9 +70,9 @@ class GameControl(object):
         """
         while not self.done:
             dt = self.clock.tick(self.fps)
+            self.draw()
             self.event_loop()
             self.update(dt)
-            self.draw()
             pg.display.update()
 
 

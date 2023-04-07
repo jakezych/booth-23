@@ -38,6 +38,9 @@ class CreditScreen(GameState):
         self.title = pg.transform.scale_by(
             pg.image.load(TITLE_SCREEN_PATH), 1.5)
 
+    def startup(self, persistent):
+        self.persist = persistent
+
     def get_event(self, event):
         if event.type == pg.QUIT:
             self.quit = True
@@ -49,8 +52,10 @@ class CreditScreen(GameState):
     def update(self, dt):
         self.y_offset += self.scroll_speed
         if self.y_offset > 700:
-            self.done = True
             self.y_offset = 0
+            self.done = True
+            self.persist["deaths"] = 0
+            self.persist["timer"] = 0
 
     def draw(self, surface):
         INFO = pg.display.Info()

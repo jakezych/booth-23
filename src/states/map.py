@@ -51,6 +51,7 @@ def load_map(tm: tilemap.GameMap):
 class Map(GameState):
     def __init__(self, map_path, next_state):
         super(Map, self).__init__()
+        self.fixed_next_state = next_state
         self.next_state = next_state
         self.map = tilemap.GameMap(map_path, 0, None)
         self.player = None
@@ -59,7 +60,6 @@ class Map(GameState):
         self.fire_effect = animations.DoomTile()
         self.first_level = False
         if map_path == "./resources/maps/hospital.tmx":
-            print("ayo", next_state)
             self.first_level = True
             self.text_box = animations.TextBox(MAP1_TEXT, font_size=8)
 
@@ -72,6 +72,7 @@ class Map(GameState):
         self.player, self.fire_coords = load_map(self.map)
         self.fader = animations.Fader()
         self.fader.activate(dir=Direction.IN)
+        self.next_state = self.fixed_next_state
         if self.first_level:
             self.text_box.reset()
             self.text_box.start()
@@ -86,7 +87,7 @@ class Map(GameState):
             if event.key == pg.K_ESCAPE:
                 self.quit = True
                 return
-            if self.paused and event.key == pg.K_RSHIFT: #restart
+            if self.paused and event.key == pg.K_RSHIFT:  # restart
                 self.next_state = "HOSPITAL"
                 self.done = True
                 self.persist["deaths"] = 0
@@ -103,7 +104,7 @@ class Map(GameState):
                         self.text_box.skip_to_end()
                 else:
                     self.paused = not self.paused
-                    self.player.can_move = not self.player.can_move # pause/unpause player
+                    self.player.can_move = not self.player.can_move  # pause/unpause player
         elif event.type == DEATH_EVENT:
             self.persist['deaths'] += 1
             self.player.grid_x = self.player.spawn_x
@@ -128,7 +129,7 @@ class Map(GameState):
                 self.timer += dt
             else:
                 if not self.text_box.active:
-                  self.timer += dt  
+                    self.timer += dt
         if self.player != None:
             self.player.update()
             self.camera.update(self.player)
