@@ -133,6 +133,9 @@ class TextBox:
         else:
             self.active = False
 
+    def reset(self):
+        self.current_message = 0
+
     def update(self, dt):
         if not self.active:
             return

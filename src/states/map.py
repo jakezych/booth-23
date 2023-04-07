@@ -73,8 +73,11 @@ class Map(GameState):
         self.fader = animations.Fader()
         self.fader.activate(dir=Direction.IN)
         if self.first_level:
+            self.text_box.reset()
             self.text_box.start()
+            self.next_state = "MAP2"
         self.player.dir = Direction.DOWN
+        self.paused = False
 
     def get_event(self, event):
         if event.type == pg.QUIT:
@@ -83,12 +86,24 @@ class Map(GameState):
             if event.key == pg.K_ESCAPE:
                 self.quit = True
                 return
-            if self.first_level and event.key == pg.K_RETURN:
-                if self.text_box.paused:
-                    self.text_box.paused = False
-                    self.text_box.advance_message()
+            if self.paused and event.key == pg.K_RSHIFT: #restart
+                self.next_state = "HOSPITAL"
+                self.done = True
+                self.persist["deaths"] = 0
+                self.persist["timer"] = 0
+                if self.first_level:
+                    self.text_box.reset()
+                return
+            if event.key == pg.K_RETURN:
+                if self.first_level and self.text_box.active:
+                    if self.text_box.paused:
+                        self.text_box.paused = False
+                        self.text_box.advance_message()
+                    else:
+                        self.text_box.skip_to_end()
                 else:
-                    self.text_box.skip_to_end()
+                    self.paused = not self.paused
+                    self.player.can_move = not self.player.can_move # pause/unpause player
         elif event.type == DEATH_EVENT:
             self.persist['deaths'] += 1
             self.player.grid_x = self.player.spawn_x
@@ -108,7 +123,12 @@ class Map(GameState):
             self.show_timer = not self.show_timer
 
     def update(self, dt):
-        self.timer += dt
+        if not self.paused:
+            if not self.first_level:
+                self.timer += dt
+            else:
+                if not self.text_box.active:
+                  self.timer += dt  
         if self.player != None:
             self.player.update()
             self.camera.update(self.player)
@@ -212,7 +232,7 @@ class Map(GameState):
         if self.first_level and self.text_box.active:
             surf.blit(self.text_box.draw(), (0, 0))
         else:
-            self.player.can_move = True
+            self.player.can_move = not self.paused
 
         sidebar_width = (INFO.current_w - INFO.current_h)//2
         scaled_win = pg.transform.scale(
