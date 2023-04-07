@@ -62,7 +62,6 @@ class Map(GameState):
             print("ayo", next_state)
             self.first_level = True
             self.text_box = animations.TextBox(MAP1_TEXT, font_size=8)
-
     def startup(self, persistent):
         self.persist = persistent
         self.deaths = self.persist['deaths']
@@ -72,12 +71,14 @@ class Map(GameState):
         self.player, self.fire_coords = load_map(self.map)
         self.fader = animations.Fader()
         self.fader.activate(dir=Direction.IN)
+        print("before", self.persist)
         if self.first_level:
             self.text_box.reset()
             self.text_box.start()
-            self.next_state = "MAP2"
+            self.next_state = "MAP2" # TOOD: remove once working solution
         self.player.dir = Direction.DOWN
         self.paused = False
+        print("after", self.persist)
 
     def get_event(self, event):
         if event.type == pg.QUIT:
@@ -87,7 +88,8 @@ class Map(GameState):
                 self.quit = True
                 return
             if self.paused and event.key == pg.K_RSHIFT: #restart
-                self.next_state = "HOSPITAL"
+                self.persist["restarted"] = self.next_state # save what the next state would have been to fix it in flip_state
+                self.next_state = "HOSPITAL" 
                 self.done = True
                 self.persist["deaths"] = 0
                 self.persist["timer"] = 0
