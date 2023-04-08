@@ -15,10 +15,10 @@ if __name__ == "__main__":
     pg.display.set_caption(WINDOW_CAPTION)
 
     # pg.key.set_repeat(1, 10)
-    states = {"MAP1": map.Map("./resources/maps/map1.tmx", "MAP2"),
-              "MAP2": map.Map("./resources/maps/map2.tmx", "MAP3"),
-              "MAP3": map.Map("./resources/maps/map3.tmx", "CREDITS"),
-              "HOSPITAL": map.Map("./resources/maps/hospital.tmx", "MAP2"),
+    states = {"MAP1": map.Map("./resources/maps/map1.tmx", "MAP2", 1),
+              "MAP2": map.Map("./resources/maps/map2.tmx", "MAP3", 2),
+              "MAP3": map.Map("./resources/maps/map3.tmx", "CREDITS", 3),
+              "HOSPITAL": map.Map("./resources/maps/hospital.tmx", "MAP2", 1),
               "SPLASH": splash.SplashScreen(),
               "CREDITS": credits.CreditScreen(),
               # "DOOM": doom_test.DoomTest(),

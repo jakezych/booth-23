@@ -49,9 +49,10 @@ def load_map(tm: tilemap.GameMap):
 
 
 class Map(GameState):
-    def __init__(self, map_path, next_state):
+    def __init__(self, map_path, next_state, map_num):
         super(Map, self).__init__()
         self.fixed_next_state = next_state
+        self.map_num = map_num
         self.next_state = next_state
         self.map = tilemap.GameMap(map_path, 0, None)
         self.player = None
@@ -59,7 +60,7 @@ class Map(GameState):
         self.show_timer = True
         self.fire_effect = animations.DoomTile()
         self.first_level = False
-        if map_path == "./resources/maps/hospital.tmx":
+        if self.map_num == 1:
             self.first_level = True
             self.text_box = animations.TextBox(MAP1_TEXT, font_size=8)
 
@@ -220,7 +221,7 @@ class Map(GameState):
         temp_surface.blit(deaths, (0, deaths_label.get_height()+25))
         # Render
         level_label = render_text("LVL")
-        level = render_text(str(1))
+        level = render_text(str(self.map_num))
         temp_surface.blit(level_label, (GAME_WIDTH//2 -
                                         (level_label.get_width()//2), 25))
         temp_surface.blit(level, (GAME_HEIGHT//2 -
