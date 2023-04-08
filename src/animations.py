@@ -184,10 +184,11 @@ class TextBox:
         for i, line in enumerate(lines):
             line_surface = render_text(
                 line, self.font_size, color=(255, 255, 255))
+            print(16 + i * 20)
             self.text_box_image.blit(line_surface, (20, 16 + i * 20))
 
         if self.paused and self.blink_timer < self.blink_frequency // 2:
-            self.text_box_image.blit(self.button_sprite, (280, 50))
+            self.text_box_image.blit(self.button_sprite, (280, 54))
 
         temp_surface.blit(self.text_box_image, (0, 220))
 
