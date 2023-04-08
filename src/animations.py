@@ -110,6 +110,10 @@ class TextBox:
         self.active = False
         self.text_box_image = pg.image.load(
             "resources/images/text_box_new.png").convert_alpha()
+        self.button_sprite = pg.image.load(
+            "resources/sprites/a_button.png").convert_alpha()
+        self.blink_timer = 0
+        self.blink_frequency = 1000  # Time in milliseconds for each blink
 
     def start(self):
         self.active = True
@@ -144,6 +148,9 @@ class TextBox:
         if self.timer > self.speed:
             self.next()
             self.timer = 0
+        self.blink_timer += dt
+        if self.blink_timer >= self.blink_frequency:
+            self.blink_timer = 0
 
     def draw(self):
         temp_surface = pg.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
@@ -179,5 +186,9 @@ class TextBox:
                 line, self.font_size, color=(255, 255, 255))
             self.text_box_image.blit(line_surface, (20, 16 + i * 20))
 
+        if self.paused and self.blink_timer < self.blink_frequency // 2:
+            self.text_box_image.blit(self.button_sprite, (280, 50))
+
         temp_surface.blit(self.text_box_image, (0, 220))
+
         return temp_surface
