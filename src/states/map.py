@@ -66,6 +66,12 @@ class Map(GameState):
             center=(GAME_WIDTH//2, GAME_HEIGHT//2 + 50))
         self.blink_timer = 0
         self.blink_frequency = 1000  # Time in milliseconds for each blink
+        # Create two surfaces for the rectangles
+        self.pause_rect1_surf = pg.Surface((6, 16), pg.SRCALPHA)
+        self.pause_rect2_surf = pg.Surface((6, 16), pg.SRCALPHA)
+        self.pause_rect1_surf.fill(WHITE)
+        self.pause_rect2_surf.fill(WHITE)
+
         if self.map_num == 1:
             self.first_level = True
             self.text_box = animations.TextBox(MAP1_TEXT, font_size=8)
@@ -273,8 +279,14 @@ class Map(GameState):
         else:
             self.player.can_move = not self.paused
 
-        if self.paused and self.blink_timer < self.blink_frequency // 2:
-            surf.blit(self.blinking_text, self.blinking_text_rect)
+        if self.paused:
+            if self.blink_timer < self.blink_frequency // 2:
+                # Draw select to restart
+                surf.blit(self.blinking_text, self.blinking_text_rect)
+                # Draw pause
+                surf.blit(self.pause_rect1_surf, (GAME_WIDTH - 16, 50))
+                surf.blit(self.pause_rect2_surf, (GAME_WIDTH - 6, 50))
+    
 
         sidebar_width = (INFO.current_w - INFO.current_h)//2
         scaled_win = pg.transform.scale(
