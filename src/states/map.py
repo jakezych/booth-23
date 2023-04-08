@@ -12,6 +12,7 @@ PLAYER_5 = pg.transform.scale_by(
     pg.image.load(LIGHT_PATH), 2)
 LIGHT_FILTER = pg.surface.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
 
+STATES = {"MAP2": "HOSPITAL", "MAP3": "MAP2", "CREDITS": "MAP3"}
 
 def load_map(tm: tilemap.GameMap):
     player = None
@@ -73,10 +74,13 @@ class Map(GameState):
         self.player, self.fire_coords = load_map(self.map)
         self.fader = animations.Fader()
         self.next_state = self.fixed_next_state
+        if self.persist.get("restarted"):
+            self.next_state = STATES[self.persist["restarted"]]
+            self.persist["restarted"] = None
         if self.first_level:
             self.text_box.reset()
             self.text_box.start()
-            self.next_state = "MAP2"  # TOOD: remove once working solution
+            self.next_state = "MAP2"  
             self.fader.activate(dir=Direction.IN, speed=3)
 
         else:
