@@ -61,6 +61,11 @@ class Map(GameState):
         self.show_timer = True
         self.fire_effect = animations.DoomTile()
         self.first_level = False
+        self.blinking_text = render_text("PRESS SELECT TO RESTART", 10)
+        self.blinking_text_rect = self.blinking_text.get_rect(
+            center=(GAME_WIDTH//2, GAME_HEIGHT//2 + 50))
+        self.blink_timer = 0
+        self.blink_frequency = 1000  # Time in milliseconds for each blink
         if self.map_num == 1:
             self.first_level = True
             self.text_box = animations.TextBox(MAP1_TEXT, font_size=8)
@@ -166,6 +171,10 @@ class Map(GameState):
             else:
                 if not self.text_box.active:
                     self.timer += dt
+        else: # update blink timer only when game is paused 
+            self.blink_timer += dt
+            if self.blink_timer >= self.blink_frequency:
+                self.blink_timer = 0
         if self.player != None:
             self.player.update()
             self.camera.update(self.player)
@@ -263,6 +272,9 @@ class Map(GameState):
             surf.blit(self.text_box.draw(), (0, 0))
         else:
             self.player.can_move = not self.paused
+
+        if self.paused and self.blink_timer < self.blink_frequency // 2:
+            surf.blit(self.blinking_text, self.blinking_text_rect)
 
         sidebar_width = (INFO.current_w - INFO.current_h)//2
         scaled_win = pg.transform.scale(
