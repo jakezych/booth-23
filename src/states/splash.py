@@ -1,6 +1,6 @@
 import pygame as pg
 from ..tools import GameState
-from ..constants import GAME_HEIGHT, GAME_WIDTH
+from ..constants import GAME_HEIGHT, GAME_WIDTH, START_BUTTON
 from ..helpers import render_text
 TITLE_SCREEN_PATH = "./resources/images/title.png"
 LEVEL_MUSIC_PATH = "./resources/sounds/rbr_splatter.mp3"
@@ -41,9 +41,10 @@ class SplashScreen(GameState):
             if event.key == pg.K_ESCAPE:
                 self.quit = True
                 return
-            # keys = [pg.K_LEFT, pg.K_RIGHT, pg.K_UP, pg.K_DOWN]
-            keys = [pg.K_RETURN]
-            if event.key in keys:
+            if event.key == pg.K_RETURN:
+                self.done = True
+        elif event.type == pg.JOYBUTTONDOWN:
+            if event.button == START_BUTTON:
                 self.done = True
 
     def draw(self, surface):

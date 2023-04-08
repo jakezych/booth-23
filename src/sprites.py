@@ -1,6 +1,6 @@
 from typing import Tuple
 import pygame as pg
-from .constants import BlockType, GRIDSIZE, Direction, DEATH_EVENT, WIN_EVENT, SHOW_TIMER_EVENT, SHOW_MASKS_EVENT, obstacles, lights, ANIM_SPEED, SCARE_EVENT
+from .constants import BlockType, GRIDSIZE, Direction, DEATH_EVENT, WIN_EVENT, SHOW_TIMER_EVENT, SHOW_MASKS_EVENT, obstacles, lights, ANIM_SPEED, SCARE_EVENT, CONTROLLER
 from . import helpers
 
 
@@ -47,7 +47,7 @@ class Player(pg.sprite.Sprite):
             [(48, 32, 16, 16), (64, 32, 16, 16), (80, 32, 16, 16)], colorkey=-1)
         self.images[Direction.LEFT] = ss.images_at(
             [(48, 48, 16, 16), (64, 48, 16, 16), (80, 48, 16, 16)], colorkey=-1)
-        #self.images[Direction.LEFT] = [pygame.transform.flip(x, flip_x=True, flip_y=False) for x in ss.images_at([(48, 0,16,16), (64,0,16,16), (80,0,16,16)], colorkey=-1)]
+        # self.images[Direction.LEFT] = [pygame.transform.flip(x, flip_x=True, flip_y=False) for x in ss.images_at([(48, 0,16,16), (64,0,16,16), (80,0,16,16)], colorkey=-1)]
         self.image = self.images[Direction.DOWN][self.anim_step]
         self.mask = pg.mask.from_surface(self.image)
 
@@ -142,20 +142,27 @@ class Player(pg.sprite.Sprite):
                 self.dir = Direction.RIGHT
         self.image = self.images[self.dir][(self.anim_step//ANIM_SPEED) % 3]
 
+    def check_dpad(self, dir):
+        match dir:
+            case Direction.UP:
+                return int(CONTROLLER.get_axis(4)) == -1
+            case Direction.DOWN:
+                return int(CONTROLLER.get_axis(4)+0.1) == 1
+            case Direction.LEFT:
+                return int(CONTROLLER.get_axis(3)) == -1
+            case Direction.RIGHT:
+                return int(CONTROLLER.get_axis(3)+0.1) == 1
+
     def keys(self) -> None:
         keys = pg.key.get_pressed()
-        if keys[pg.K_w] or keys[pg.K_UP]:
+        if keys[pg.K_w] or keys[pg.K_UP] or self.check_dpad(Direction.UP):
             self.movement(Direction.UP)
-        elif keys[pg.K_a] or keys[pg.K_LEFT]:
+        elif keys[pg.K_a] or keys[pg.K_LEFT] or self.check_dpad(Direction.LEFT):
             self.movement(Direction.LEFT)
-        elif keys[pg.K_s] or keys[pg.K_DOWN]:
+        elif keys[pg.K_s] or keys[pg.K_DOWN] or self.check_dpad(Direction.DOWN):
             self.movement(Direction.DOWN)
-        elif keys[pg.K_d] or keys[pg.K_RIGHT]:
+        elif keys[pg.K_d] or keys[pg.K_RIGHT] or self.check_dpad(Direction.RIGHT):
             self.movement(Direction.RIGHT)
-        elif keys[pg.K_m]:
-            pg.event.post(pg.event.Event(SHOW_MASKS_EVENT))
-        elif keys[pg.K_t]:
-            pg.event.post(pg.event.Event(SHOW_TIMER_EVENT))
 
 
 class Block(pg.sprite.Sprite):

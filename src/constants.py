@@ -2,6 +2,8 @@ from enum import Enum
 import pygame as pg
 
 pg.init()
+pg.joystick.init()
+CONTROLLER = pg.joystick.Joystick(0)
 FULLSCREEN = False
 
 GAME_WIDTH = 320
@@ -54,9 +56,7 @@ MAP1_TEXT = [
     "You need to escape the Hawkins Lab.",
     "Eleven: ...",
     "Hopper's Voice: Find the secret passage to the Upside Down. It's your only way out.",
-    "Eleven: ...",
     "Hopper's Voice: Once you're there, retrieve the Eggo waffles. They hold a key to your power.",
-    "Eleven: ...",
     "Hopper's Voice: Be careful, the Demogorgon is lurking. It will try to stop you.",
     "Eleven: ...",
     "Hopper's Voice: Trust your instincts and your powers. I believe in you, kid.",
@@ -64,3 +64,8 @@ MAP1_TEXT = [
 
 GAME_FONT_8 = pg.font.Font('./resources/fonts/font.ttf', 8)
 GAME_FONT_10 = pg.font.Font('./resources/fonts/font.ttf', 10)
+
+A_BUTTON = 1
+B_BOTTON = 2
+SELECT_BUTTON = 8
+START_BUTTON = 9

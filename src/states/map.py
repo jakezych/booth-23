@@ -1,6 +1,6 @@
 import pygame as pg
 from ..tools import GameState
-from ..constants import GAME_HEIGHT, GAME_WIDTH, BlockType, DEATH_EVENT, Direction, WIN_EVENT, SHOW_MASKS_EVENT, SHOW_TIMER_EVENT, lights, obstacles, SCARE_EVENT, MAP1_TEXT
+from ..constants import *
 from .. import sprites
 from .. import tilemap
 from .. import animations
@@ -83,6 +83,7 @@ class Map(GameState):
     def get_event(self, event):
         if event.type == pg.QUIT:
             self.quit = True
+
         elif event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 self.quit = True
@@ -107,6 +108,30 @@ class Map(GameState):
                 else:
                     self.paused = not self.paused
                     self.player.can_move = not self.player.can_move  # pause/unpause player
+
+        elif event.type == pg.JOYBUTTONDOWN:
+            if self.paused and event.button == SELECT_BUTTON:  # restart
+                # save what the next state would have been to fix it in flip_state
+                self.persist["restarted"] = self.next_state
+                self.next_state = "HOSPITAL"
+                self.done = True
+                self.persist["deaths"] = 0
+                self.persist["timer"] = 0
+                if self.first_level:
+                    self.text_box.reset()
+                return
+            if event.button == A_BUTTON:
+                if self.first_level and self.text_box.active:
+                    if self.text_box.paused:
+                        self.text_box.paused = False
+                        self.text_box.advance_message()
+                    else:
+                        self.text_box.skip_to_end()
+
+            if event.button == START_BUTTON:
+                self.paused = not self.paused
+                self.player.can_move = not self.player.can_move  # pause/unpause player
+
         elif event.type == DEATH_EVENT:
             self.persist['deaths'] += 1
             self.player.grid_x = self.player.spawn_x
@@ -139,13 +164,6 @@ class Map(GameState):
             self.fader.update()
             if self.first_level:
                 self.text_box.update(dt)
-
-    # def render_fire(self):
-    #     temp_surface = pg.Surface((GAME_WIDTH, GAME_HEIGHT)).convert_alpha()
-    #     for t in fire:
-    #         t.rect = self.camera.apply_rect(t.rect)
-    #         t.render_fire_effect(temp_surface)
-    #     return temp_surface
 
     def render_map(self):
         temp_surface = pg.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
