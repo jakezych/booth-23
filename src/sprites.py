@@ -143,15 +143,16 @@ class Player(pg.sprite.Sprite):
         self.image = self.images[self.dir][(self.anim_step//ANIM_SPEED) % 3]
 
     def check_dpad(self, dir):
-        match dir:
-            case Direction.UP:
-                return int(CONTROLLER.get_axis(4)) == -1
-            case Direction.DOWN:
-                return int(CONTROLLER.get_axis(4)+0.1) == 1
-            case Direction.LEFT:
-                return int(CONTROLLER.get_axis(3)) == -1
-            case Direction.RIGHT:
-                return int(CONTROLLER.get_axis(3)+0.1) == 1
+        if CONTROLLER != None:
+            match dir:
+                case Direction.UP:
+                    return int(CONTROLLER.get_axis(4)) == -1
+                case Direction.DOWN:
+                    return int(CONTROLLER.get_axis(4)+0.1) == 1
+                case Direction.LEFT:
+                    return int(CONTROLLER.get_axis(3)) == -1
+                case Direction.RIGHT:
+                    return int(CONTROLLER.get_axis(3)+0.1) == 1
 
     def keys(self) -> None:
         keys = pg.key.get_pressed()

@@ -3,7 +3,8 @@ import pygame as pg
 
 pg.init()
 pg.joystick.init()
-CONTROLLER = pg.joystick.Joystick(0)
+# CONTROLLER = pg.joystick.Joystick(0)
+CONTROLLER = None
 FULLSCREEN = False
 
 GAME_WIDTH = 320

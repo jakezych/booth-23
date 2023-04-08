@@ -12,10 +12,14 @@ class DoomTile(pg.sprite.Sprite):
         self.color_pallete = [(0, 0, 0)] * 32
         for i in range(8):
             color_i = clamp(i * 32, 0, 255)
-            self.color_pallete[i + 0] = (0, 0, 0)
-            self.color_pallete[i + 8] = (255, color_i, 0)
-            self.color_pallete[i + 16] = (255, 255, color_i)
-            self.color_pallete[i + 24] = (0, 0, 0)
+            # self.color_pallete[i + 0] = (0, 0, 0)
+            # self.color_pallete[i + 8] = (255, color_i, 0)
+            # self.color_pallete[i + 16] = (255, 255, color_i)
+            # self.color_pallete[i + 24] = (0, 0, 0)
+            self.color_pallete[i + 0] = (254, 107, 86)
+            self.color_pallete[i + 8] = (255, 160, 104)
+            self.color_pallete[i + 16] = (255, 209, 152)
+            self.color_pallete[i + 24] = (255, 160, 104)
         self.fire_pixels = [[0 for _ in range(self.TILE_HEIGHT)]
                             for _ in range(self.TILE_WIDTH)]
         for x in range(self.TILE_WIDTH):
@@ -31,7 +35,7 @@ class DoomTile(pg.sprite.Sprite):
                 if src_y >= self.TILE_HEIGHT:
                     continue
 
-                decay = random.randint(0, 3)
+                decay = random.randint(0, 4)
                 new_x = (x - decay + self.TILE_WIDTH) % self.TILE_WIDTH
                 new_intensity = max(self.fire_pixels[x][src_y] - decay, 0)
 
@@ -45,13 +49,17 @@ class DoomTile(pg.sprite.Sprite):
             (self.TILE_WIDTH, self.TILE_HEIGHT), pg.SRCALPHA)
         # Set the background color to transparent
         self.fire_surface.fill((255, 255, 255, 0))
-
+        blank_coords = [(0, self.TILE_HEIGHT-1),
+                        (self.TILE_WIDTH-1, self.TILE_HEIGHT-1)]
         for x in range(self.TILE_WIDTH):
             for y in range(self.TILE_HEIGHT):
-                intensity = self.fire_pixels[x][y]
-                if intensity > 0:  # Only update pixels with color
-                    color = self.color_pallete[intensity]
-                    self.fire_surface.set_at((x, y), color)
+                if (x, y) in blank_coords:
+                    self.fire_surface.set_at((x, y), (0, 0, 0, 0))
+                else:
+                    intensity = self.fire_pixels[x][y]
+                    if intensity > 0:  # Only update pixels with color
+                        color = self.color_pallete[intensity]
+                        self.fire_surface.set_at((x, y), color)
 
     def render_fire_effect(self, surface, x, y):
         surface.blit(self.fire_surface, (x, y))

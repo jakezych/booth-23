@@ -24,7 +24,7 @@ if __name__ == "__main__":
               # "DOOM": doom_test.DoomTest(),
               "SCARE": scare.ScareScreen(),
               }
-    game = GameControl(screen, states, "SPLASH")
+    game = GameControl(screen, states, "MAP2")
     game.run()
     pg.quit()
     sys.exit()
