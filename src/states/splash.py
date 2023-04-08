@@ -23,6 +23,10 @@ class SplashScreen(GameState):
         self.blink_timer = 0
         self.blink_frequency = 1000  # Time in milliseconds for each blink
 
+        self.bottom_text = render_text("© CMU CARNIVAL BOOTH 2023", 8)
+        self.bottom_text_rect = self.bottom_text.get_rect(
+            center=(GAME_WIDTH//2, GAME_HEIGHT - 40))
+
     def update(self, dt):
         self.blink_timer += dt
         if self.blink_timer >= self.blink_frequency:
@@ -54,6 +58,8 @@ class SplashScreen(GameState):
 
         if self.blink_timer < self.blink_frequency // 2:
             surf.blit(self.blinking_text, self.blinking_text_rect)
+
+        surf.blit(self.bottom_text, self.bottom_text_rect)
 
         sidebar_width = (INFO.current_w - INFO.current_h)//2
         scaled_win = pg.transform.scale(

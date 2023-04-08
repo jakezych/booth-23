@@ -71,12 +71,16 @@ class Map(GameState):
         pg.sprite.Group.empty(lights)
         self.player, self.fire_coords = load_map(self.map)
         self.fader = animations.Fader()
-        self.fader.activate(dir=Direction.IN, speed=4)
         self.next_state = self.fixed_next_state
         if self.first_level:
             self.text_box.reset()
             self.text_box.start()
             self.next_state = "MAP2"  # TOOD: remove once working solution
+            self.fader.activate(dir=Direction.IN, speed=3)
+
+        else:
+            self.fader.activate(dir=Direction.IN, speed=4)
+
         self.player.dir = Direction.DOWN
         self.paused = False
 
