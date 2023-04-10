@@ -14,6 +14,7 @@ LIGHT_FILTER = pg.surface.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
 
 STATES = {"MAP2": "HOSPITAL", "MAP3": "MAP2", "CREDITS": "MAP3"}
 
+
 def load_map(tm: tilemap.GameMap):
     player = None
     coords = []
@@ -91,7 +92,7 @@ class Map(GameState):
         if self.first_level:
             self.text_box.reset()
             self.text_box.start()
-            self.next_state = "MAP2"  
+            self.next_state = "MAP2"
             self.fader.activate(dir=Direction.IN, speed=3)
 
         else:
@@ -177,7 +178,7 @@ class Map(GameState):
             else:
                 if not self.text_box.active:
                     self.timer += dt
-        else: # update blink timer only when game is paused 
+        else:  # update blink timer only when game is paused
             self.blink_timer += dt
             if self.blink_timer >= self.blink_frequency:
                 self.blink_timer = 0
@@ -280,14 +281,12 @@ class Map(GameState):
             self.player.can_move = not self.paused
 
         if self.paused:
+            # Draw pause
+            surf.blit(self.pause_rect1_surf, (GAME_WIDTH - 16, 50))
+            surf.blit(self.pause_rect2_surf, (GAME_WIDTH - 6, 50))
             if self.blink_timer < self.blink_frequency // 2:
                 # Draw select to restart
                 surf.blit(self.blinking_text, self.blinking_text_rect)
-                # Draw pause
-                surf.blit(self.pause_rect1_surf, (GAME_WIDTH - 16, 50))
-                surf.blit(self.pause_rect2_surf, (GAME_WIDTH - 6, 50))
-    
-
         sidebar_width = (INFO.current_w - INFO.current_h)//2
         scaled_win = pg.transform.scale(
             surf, (INFO.current_h, INFO.current_h))
