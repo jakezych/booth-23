@@ -149,10 +149,11 @@ class Map(GameState):
                         self.text_box.advance_message()
                     else:
                         self.text_box.skip_to_end()
-            if event.button == START_BUTTON and not self.text_box.active:
+            if event.button == START_BUTTON:
+                if self.first_level and self.text_box.active:
+                    break
                 self.paused = not self.paused
                 self.player.can_move = not self.player.can_move  # pause/unpause player
-
         elif event.type == DEATH_EVENT:
             self.persist['deaths'] += 1
             self.player.grid_x = self.player.spawn_x
