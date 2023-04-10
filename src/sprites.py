@@ -146,13 +146,13 @@ class Player(pg.sprite.Sprite):
         if CONTROLLER != None:
             match dir:
                 case Direction.UP:
-                    return int(CONTROLLER.get_axis(4)) == -1
+                    return int(CONTROLLER.get_axis(1)) == -1
                 case Direction.DOWN:
-                    return int(CONTROLLER.get_axis(4)+0.1) == 1
+                    return int(CONTROLLER.get_axis(1) + 0.1) == 1
                 case Direction.LEFT:
-                    return int(CONTROLLER.get_axis(3)) == -1
+                    return int(CONTROLLER.get_axis(0)) == -1
                 case Direction.RIGHT:
-                    return int(CONTROLLER.get_axis(3)+0.1) == 1
+                    return int(CONTROLLER.get_axis(0) + 0.1) == 1
 
     def keys(self) -> None:
         keys = pg.key.get_pressed()

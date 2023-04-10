@@ -102,6 +102,7 @@ class Map(GameState):
         self.paused = False
 
     def get_event(self, event):
+        print(event)
         if event.type == pg.QUIT:
             self.quit = True
 
@@ -148,8 +149,7 @@ class Map(GameState):
                         self.text_box.advance_message()
                     else:
                         self.text_box.skip_to_end()
-
-            if event.button == START_BUTTON:
+            if event.button == START_BUTTON and not self.text_box.active:
                 self.paused = not self.paused
                 self.player.can_move = not self.player.can_move  # pause/unpause player
 
