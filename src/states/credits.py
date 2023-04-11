@@ -25,6 +25,7 @@ class CreditScreen(GameState):
             "Yoona Lee",
             "Jack Troy",
             "Michael Sun",
+            "Dina Razek",
             "",
             "On behalf of",
             "Phi Delta Theta",
