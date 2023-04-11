@@ -4,19 +4,11 @@ Change map
 
 Add sound for dialogue box 
 
-Add pause screen visual indicator
-
-Add pause screen text 
-
 Add exit pause with B button
 
 Optimize by rendering camera view only of map only
 
 Optimize using PyPy
-
-Create MAP2
-
-Create MAP3
 
 Improve storyline
 
@@ -49,3 +41,12 @@ Add title screen bottom text
 
 Fix level counter (change first_level flag)
 
+
+Add pause screen visual indicator
+
+Create MAP2
+
+Create MAP3
+
+
+Add pause screen text 
