@@ -1,6 +1,6 @@
 from typing import Tuple
 import pygame as pg
-from .constants import BlockType, GRIDSIZE, Direction, DEATH_EVENT, WIN_EVENT, SHOW_TIMER_EVENT, SHOW_MASKS_EVENT, obstacles, lights, ANIM_SPEED, SCARE_EVENT, CONTROLLER
+from .constants import BlockType, GRIDSIZE, Direction, DEATH_EVENT, WIN_EVENT, SHOW_TIMER_EVENT, SHOW_MASKS_EVENT, obstacles, lights, cars, ANIM_SPEED, SCARE_EVENT, CONTROLLER
 from . import helpers
 
 
@@ -32,6 +32,13 @@ class Player(pg.sprite.Sprite):
         self.show_title_screen = True
         self.scare_on_next = False
         self.can_move = False
+        self.death_event = pg.event.Event(DEATH_EVENT)
+
+    def checkCarCollide(self):
+        for car in cars.sprites():
+            if pg.sprite.collide_mask(self, car) != None:
+                return True
+        return False
 
     def toggle_move(self):
         self.can_move = not self.can_move
@@ -57,6 +64,8 @@ class Player(pg.sprite.Sprite):
         if self.can_move:
             self.keys()
         self.mask = pg.mask.from_surface(self.image)
+        if self.checkCarCollide():
+            _ = pg.event.post(self.death_event)
 
     def test_collision_masks(self, direction: Direction, new_x: int, new_y: int, tiles: pg.sprite.Group) -> int:
         if direction == Direction.RIGHT:

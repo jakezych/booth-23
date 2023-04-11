@@ -15,15 +15,14 @@ if __name__ == "__main__":
     pg.display.set_caption(WINDOW_CAPTION)
 
     # pg.key.set_repeat(1, 10)
-    states = {"MAP1": map.Map("./resources/maps/map1.tmx", "MAP2", 1),
-              "MAP2": map.Map("./resources/maps/map2.tmx", "MAP3", 2),
-              "MAP3": map.Map("./resources/maps/map3.tmx", "CREDITS", 3),
-              "HOSPITAL": map.Map("./resources/maps/hospital.tmx", "MAP2", 1),
-              "SPLASH": splash.SplashScreen(),
-              "CREDITS": credits.CreditScreen(),
-              # "DOOM": doom_test.DoomTest(),
-              "SCARE": scare.ScareScreen(),
-              }
+    states = {
+        "MAP3": map.Map("./resources/maps/map3.tmx", "CREDITS", 3),
+        "HOSPITAL": map.Map("./resources/maps/hospital.tmx", "HIGHWAY", 1),
+        "SPLASH": splash.SplashScreen(),
+        "CREDITS": credits.CreditScreen(),
+        "SCARE": scare.ScareScreen(),
+        "HIGHWAY": map.Map("./resources/maps/highway.tmx", "MAP3", 2),
+    }
     game = GameControl(screen, states, "SPLASH")
     game.run()
     pg.quit()

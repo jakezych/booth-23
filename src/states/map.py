@@ -2,6 +2,7 @@ import pygame as pg
 from ..tools import GameState
 from ..constants import *
 from .. import sprites
+from .. import car
 from .. import tilemap
 from .. import animations
 from ..helpers import render_text
@@ -12,7 +13,8 @@ PLAYER_5 = pg.transform.scale_by(
     pg.image.load(LIGHT_PATH), 2)
 LIGHT_FILTER = pg.surface.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
 
-STATES = {"MAP2": "HOSPITAL", "MAP3": "MAP2", "CREDITS": "MAP3"}
+STATES = {"HIGHWAY": "HOSPITAL", "MAP3": "MAP2",
+          "CREDITS": "MAP3", "MAP3": "HIGHWAY"}
 
 
 def load_map(tm: tilemap.GameMap):
@@ -47,6 +49,11 @@ def load_map(tm: tilemap.GameMap):
         if obj.name == 'light':
             _ = sprites.Light(obj.x, obj.y, obj.width,
                               obj.height)
+        if obj.name == 'car_spawn_r':
+            _ = car.CarSpawner(obj.x, obj.y, Direction.RIGHT)
+        if obj.name == 'car_spawn_l':
+            _ = car.CarSpawner(obj.x, obj.y, Direction.LEFT)
+
     return player, coords
 
 
@@ -83,6 +90,8 @@ class Map(GameState):
         self.timer = self.persist['timer']
         pg.sprite.Group.empty(obstacles)
         pg.sprite.Group.empty(lights)
+        pg.sprite.Group.empty(cars)
+        pg.sprite.Group.empty(car_spawners)
         self.player, self.fire_coords = load_map(self.map)
         self.fader = animations.Fader()
         self.next_state = self.fixed_next_state
@@ -92,7 +101,7 @@ class Map(GameState):
         if self.first_level:
             self.text_box.reset()
             self.text_box.start()
-            self.next_state = "MAP2"
+            self.next_state = "HIGHWAY"
             self.fader.activate(dir=Direction.IN, speed=3)
 
         else:
@@ -102,7 +111,6 @@ class Map(GameState):
         self.paused = False
 
     def get_event(self, event):
-        print(event)
         if event.type == pg.QUIT:
             self.quit = True
 
@@ -174,6 +182,10 @@ class Map(GameState):
 
     def update(self, dt):
         if not self.paused:
+            for car_spawner in car_spawners.sprites():
+                car_spawner.update()
+            for car in cars.sprites():
+                car.update()
             if not self.first_level:
                 self.timer += dt
             else:
@@ -259,6 +271,13 @@ class Map(GameState):
         temp_surface.set_colorkey((0, 0, 0))
         return temp_surface
 
+    def render_cars(self):
+        temp_surface = pg.surface.Surface(
+            (GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
+        for car in cars.sprites():
+            temp_surface.blit(car.image, self.camera.apply_rect(car.rect))
+        return temp_surface
+
     def draw(self, surface):
         INFO = pg.display.Info()
         surf = pg.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
@@ -268,6 +287,8 @@ class Map(GameState):
 
         fire = self.render_fire()
         surf.blit(fire, (0, 0))
+
+        surf.blit(self.render_cars(), (0, 0))
 
         lights = self.render_lights()
         surf.blit(lights, (0, 0), special_flags=pg.BLEND_RGBA_MULT)

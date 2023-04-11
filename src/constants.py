@@ -7,7 +7,7 @@ try:
     CONTROLLER = pg.joystick.Joystick(0)
 except:
     CONTROLLER = None
-FULLSCREEN = False
+FULLSCREEN = True
 
 GAME_WIDTH = 320
 GAME_HEIGHT = 320
@@ -26,6 +26,8 @@ ANIM_SPEED = 3
 
 obstacles: pg.sprite.Group = pg.sprite.Group()
 lights: pg.sprite.Group = pg.sprite.Group()
+cars: pg.sprite.Group = pg.sprite.Group()
+car_spawners: pg.sprite.Group = pg.sprite.Group()
 
 
 DEATH_EVENT = pg.event.custom_type()
@@ -72,3 +74,13 @@ A_BUTTON = 1
 B_BOTTON = 2
 SELECT_BUTTON = 8
 START_BUTTON = 9
+
+
+INFO = pg.display.Info()
+if FULLSCREEN:
+    screen = pg.display.set_mode(
+        (INFO.current_w, INFO.current_h-50), pg.FULLSCREEN)
+else:
+    screen = pg.display.set_mode(
+        (INFO.current_w, INFO.current_h-50))
+pg.display.set_caption(WINDOW_CAPTION)
