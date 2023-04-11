@@ -33,7 +33,7 @@ class Car(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
         self.x = spawn_x
         self.y = spawn_y
-        self.speed = random.uniform(4, 4.5)
+        self.speed = random.uniform(4.5, 4.75)
 
     def update(self):
         if self.dir == Direction.LEFT:
@@ -53,8 +53,7 @@ class CarSpawner(pg.sprite.Sprite):
         self.w = w
         self. h = h
         self.dir = dir
-        self.random_time = random.randint(
-            CAR_SPAWN_MAX_FREQ//2, CAR_SPAWN_MAX_FREQ)
+        self.random_time = 0
         self.timer = 0
 
     def update(self):

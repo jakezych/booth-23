@@ -106,7 +106,7 @@ class Fader:
 
 
 class TextBox:
-    def __init__(self, messages, background_color=(0, 0, 0, 180), font_size=10, speed=100):
+    def __init__(self, messages, background_color=(0, 0, 0, 180), font_size=10, speed=75):
         self.background_color = background_color
         self.messages = messages
         self.current_message = 0

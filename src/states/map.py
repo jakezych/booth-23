@@ -83,6 +83,7 @@ class Map(GameState):
         if self.map_num == 1:
             self.first_level = True
             self.text_box = animations.TextBox(MAP1_TEXT, font_size=8)
+        self.time_remaining = 7500
 
     def startup(self, persistent):
         self.persist = persistent
@@ -103,7 +104,8 @@ class Map(GameState):
             self.text_box.start()
             self.next_state = "HIGHWAY"
             self.fader.activate(dir=Direction.IN, speed=3)
-
+        elif self.map_num == 4:
+            self.fader.activate(dir=Direction.IN, speed=2)
         else:
             self.fader.activate(dir=Direction.IN, speed=4)
 
@@ -162,6 +164,10 @@ class Map(GameState):
                     return
                 self.paused = not self.paused
                 self.player.can_move = not self.player.can_move  # pause/unpause player
+            if event.button == B_BUTTON:
+                if self.paused:
+                    self.paused = False
+                    self.player.can_move = True
         elif event.type == DEATH_EVENT:
             self.persist['deaths'] += 1
             self.player.grid_x = self.player.spawn_x
@@ -191,6 +197,8 @@ class Map(GameState):
             else:
                 if not self.text_box.active:
                     self.timer += dt
+            if self.map_num == 4:
+                self.time_remaining -= dt
         else:  # update blink timer only when game is paused
             self.blink_timer += dt
             if self.blink_timer >= self.blink_frequency:
@@ -202,6 +210,8 @@ class Map(GameState):
             self.fader.update()
             if self.first_level:
                 self.text_box.update(dt)
+        if self.time_remaining < 0:
+            self.done = True
 
     def render_map(self):
         temp_surface = pg.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
@@ -254,6 +264,7 @@ class Map(GameState):
         temp_surface.blit(deaths, (0, deaths_label.get_height()+25))
         # Render
         level_label = render_text("LVL")
+
         level = render_text(str(self.map_num))
         temp_surface.blit(level_label, (GAME_WIDTH//2 -
                                         (level_label.get_width()//2), 25))
@@ -284,16 +295,16 @@ class Map(GameState):
 
         map = self.render_map()
         surf.blit(map, (0, 0))
+        surf.blit(self.render_cars(), (0, 0))
 
         fire = self.render_fire()
         surf.blit(fire, (0, 0))
 
-        surf.blit(self.render_cars(), (0, 0))
-
         lights = self.render_lights()
         surf.blit(lights, (0, 0), special_flags=pg.BLEND_RGBA_MULT)
-        hud = self.render_hud()
-        surf.blit(hud, (0, 0))
+        if self.map_num != 4:
+            hud = self.render_hud()
+            surf.blit(hud, (0, 0))
 
         surf.blit(self.fader.draw(), (0, 0))
 
