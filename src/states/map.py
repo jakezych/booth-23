@@ -14,7 +14,7 @@ PLAYER_5 = pg.transform.scale_by(
 LIGHT_FILTER = pg.surface.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
 
 STATES = {"HIGHWAY": "HOSPITAL", "MAP3": "MAP2",
-          "CREDITS": "MAP3", "MAP3": "HIGHWAY"}
+          "WIN": "MAP3", "MAP3": "HIGHWAY"}
 
 
 def load_map(tm: tilemap.GameMap):
