@@ -170,6 +170,7 @@ class Map(GameState):
                     self.player.can_move = True
         elif event.type == DEATH_EVENT:
             self.persist['deaths'] += 1
+            pg.sprite.Group.empty(cars)
             self.player.grid_x = self.player.spawn_x
             self.player.grid_y = self.player.spawn_y
             self.player.dir = Direction.UP

@@ -43,6 +43,10 @@ class Car(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x, self.y)
         self.mask = pg.mask.from_surface(self.image)
+        if self.x < -self.rect.width:
+            self.kill()
+        if self.x > 640:
+            self.kill()
 
 
 class CarSpawner(pg.sprite.Sprite):
