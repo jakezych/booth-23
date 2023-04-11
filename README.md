@@ -1,10 +1,6 @@
 ## Todo
 
-Change map
-
 Add sound for dialogue box 
-
-Add exit pause with B button
 
 Optimize by rendering camera view only of map only
 
@@ -28,8 +24,6 @@ Add credits music
 
 Add coloring for text box
 
-Add win screen?	
-
 Add character sprite animation for text box
 
 # DONE
@@ -41,6 +35,7 @@ Add title screen bottom text
 
 Fix level counter (change first_level flag)
 
+Add win screen?	
 
 Add pause screen visual indicator
 
@@ -48,5 +43,6 @@ Create MAP2
 
 Create MAP3
 
+Add exit pause with B button
 
 Add pause screen text 
