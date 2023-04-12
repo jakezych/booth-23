@@ -14,15 +14,17 @@ class TextScreen(GameState):
     def __init__(self):
         super(TextScreen, self).__init__()
         self.next_state = "MAP3"
-        self.time_remaining = 2500
-        self.total_time = 2500
+        self.time_remaining = 4000
+        self.total_time = 4000
         self.text = "THE UPSIDE DOWN"
         self.font_size = 10
-        self.reflect = False
+        self.reflecting = False
         self.text = render_text("THE UPSIDE DOWN", self.font_size)
         self.text_rect = self.text.get_rect(
             center=(GAME_WIDTH//2, GAME_HEIGHT//2))
         self.fader = animations.Fader()
+        self.current_angle = 0
+        self.used_text = self.text
 
     def startup(self, persistent):
         self.persist = persistent
@@ -38,10 +40,16 @@ class TextScreen(GameState):
 
     def update(self, dt):
         self.time_remaining -= dt
-        if not self.reflect and self.time_remaining < self.total_time // 2:
-            self.reflect = True
+        if self.reflecting and self.current_angle < 180:
+            self.current_angle += 2
+        if self.time_remaining < self.total_time // 2:
+            self.reflecting = True
             # self.text = pg.transform.flip(self.text, False, True)
-            self.text = pg.transform.rotate(self.text, 180)
+            self.used_text = pg.transform.rotate(self.text, self.current_angle)
+            # self.text_rect = self.text.get_rect(
+            #    center=(GAME_WIDTH//2, GAME_HEIGHT//2))
+            self.text_rect = self.used_text.get_rect(
+                center=(GAME_WIDTH//2, GAME_HEIGHT//2))
         if self.time_remaining < 0:
             self.done = True
         self.fader.update()
@@ -50,7 +58,7 @@ class TextScreen(GameState):
         INFO = pg.display.Info()
         surf = pg.Surface((GAME_WIDTH, GAME_HEIGHT))
 
-        surf.blit(self.text, self.text_rect)
+        surf.blit(self.used_text, self.text_rect)
         surf.blit(self.fader.draw(), (0, 0))
 
         sidebar_width = (INFO.current_w - INFO.current_h)//2
