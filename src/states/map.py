@@ -14,7 +14,7 @@ PLAYER_5 = pg.transform.scale_by(
 LIGHT_FILTER = pg.surface.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
 
 STATES = {"HIGHWAY": "HOSPITAL", "MAP3": "MAP2",
-          "WIN": "MAP3", "MAP3": "HIGHWAY"}
+          "WIN": "MAP3", "MAP3": "TEXT", "TEXT": "HIGHWAY"}
 
 
 def load_map(tm: tilemap.GameMap):
@@ -309,8 +309,11 @@ class Map(GameState):
         if self.map_num != 4:
             hud = self.render_hud()
             if self.map_num == 3:
-                hud = pg.transform.flip(hud, False, True)
-            surf.blit(hud, (0, 0))
+                # hud = pg.transform.flip(hud, False, True)
+                hud = pg.transform.rotate(hud, 180)
+                surf.blit(hud, (0, -208))
+            else:
+                surf.blit(hud, (0, 0))
 
         surf.blit(self.fader.draw(), (0, 0))
 
