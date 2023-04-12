@@ -241,7 +241,7 @@
   <object id="102" name="death_collide" x="192" y="144" width="16" height="16"/>
   <object id="103" name="death_collide" x="192" y="176" width="16" height="16"/>
   <object id="104" name="death_collide" x="224" y="64" width="288" height="15"/>
-  <object id="105" name="death_collide" x="224" y="97" width="271" height="15"/>
+  <object id="105" name="death_collide" x="224" y="97" width="272" height="15"/>
   <object id="108" name="death_collide" x="256" y="209" width="257" height="15"/>
   <object id="109" name="death_collide" x="256" y="176" width="15" height="33"/>
   <object id="110" name="death_collide" x="304" y="176" width="176" height="15"/>
@@ -258,8 +258,8 @@
   <object id="123" name="death_collide" x="240" y="320" width="16" height="16"/>
   <object id="124" name="death_collide" x="224" y="336" width="16" height="16"/>
   <object id="125" name="death_collide" x="240" y="336" width="16" height="16"/>
-  <object id="126" name="death_collide" x="513" y="80" width="15" height="144"/>
-  <object id="127" name="death_collide" x="480" y="112" width="15" height="79"/>
+  <object id="126" name="death_collide" x="512" y="80" width="16" height="144"/>
+  <object id="127" name="death_collide" x="480" y="112" width="16" height="79"/>
   <object id="128" name="checkpoint_collide" x="304" y="304" width="48" height="16"/>
  </objectgroup>
 </map>
