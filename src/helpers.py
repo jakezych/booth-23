@@ -1,5 +1,5 @@
 import pygame as pg
-from .constants import GAME_FONT_8, GAME_FONT_10
+from .constants import GAME_FONT_8, GAME_FONT_10, GAME_FONT_6
 
 
 def clamp(n, minn, maxn):
@@ -10,8 +10,11 @@ def render_text(text: str, size=8, color=(255, 0, 0)) -> pg.Surface:
     # font.set_bold(True)
     # font.set_italic(True)
     font = GAME_FONT_8
+    print(size)
     if size == 10:
         font = GAME_FONT_10
+    if size == 6:
+        font = GAME_FONT_6
 
     rendered = font.render(
         text, False, color)

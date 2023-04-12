@@ -56,16 +56,21 @@ class BlockType(Enum):
 
 MAP1_TEXT = [
     "Eleven! Wake up! Wake up!...",
-    "Eleven: Hopper??? Is that you? I can hear you in my head...",
-    "Hopper's Voice: Eleven, it's me. You need to escape the Hawkins Lab.",
+    "Eleven: Hopper??? Is that you? ",
+    "I can hear you in my head...",
+    "Hopper's Voice: Eleven, it's me. ",
+    "You need to escape the Hawkins Lab.",
     "Eleven: ...",
-    "Hopper's Voice: Find the portal to the Upside Down. It's your only way out.",
-    "Hopper's Voice: Once you're there, retrieve the Eggo waffles. They hold a key to your power.",
-    "Hopper's Voice: Be careful, the Demogorgon is lurking. It will try to stop you.",
+    "Hopper's Voice: Find the portal to the Upside Down.",
+    "Once you're there, retrieve the Eggo waffles. ",
+    "They hold a key to your power.",
+    "Be careful, the Demogorgon is lurking.",
     "Eleven: ...",
-    "Hopper's Voice: Trust your instincts and your powers. I believe in you, kid.",
+    "Hopper's Voice: Trust your instincts and your powers. ",
+    "I believe in you, kid.",
     "Eleven: ..."]
 
+GAME_FONT_6 = pg.font.Font('./resources/fonts/font.ttf', 6)
 GAME_FONT_8 = pg.font.Font('./resources/fonts/font.ttf', 8)
 GAME_FONT_10 = pg.font.Font('./resources/fonts/font.ttf', 10)
 

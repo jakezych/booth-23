@@ -106,7 +106,7 @@ class Fader:
 
 
 class TextBox:
-    def __init__(self, messages, background_color=(0, 0, 0, 180), font_size=8, speed=75):
+    def __init__(self, messages, background_color=(0, 0, 0, 180), font_size=6, speed=75):
         self.background_color = background_color
         self.messages = messages
         self.current_message = 0
@@ -182,7 +182,7 @@ class TextBox:
                 test_line, self.font_size, color=(255, 255, 255))
             test_width = test_surface.get_width()
 
-            if test_width > (288 - 40):  # available space in the textbox
+            if test_width > (256 - 40):  # available space in the textbox
                 lines.append(current_line.strip())
                 current_line = word + " "
                 accumulated_characters += len(current_line)
@@ -199,9 +199,9 @@ class TextBox:
             self.text_box_image.blit(line_surface, (20, 16 + i * 20))
 
         if self.paused and self.blink_timer < self.blink_frequency // 2:
-            self.text_box_image.blit(self.button_sprite, (280, 54))
+            self.text_box_image.blit(
+                self.button_sprite, (GAME_WIDTH - (32), 40))
 
-        print(self.text_box_image.get_width())
         temp_surface.blit(self.text_box_image, (0, 3 * GAME_HEIGHT//4))
 
         return temp_surface
