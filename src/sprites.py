@@ -97,6 +97,11 @@ class Player(pg.sprite.Sprite):
                         self.grid_y += -self.step_size
                         self.anim_step += 1
                         self.scare_on_next = True
+                    case BlockType.CHECKPOINT:
+                        self.spawn_x = self.grid_x
+                        self.spawn_y = self.grid_y
+                        self.grid_y += -self.step_size
+                        self.anim_step += 1
                 self.dir = Direction.UP
             case Direction.LEFT:
                 match self.test_collision_masks(Direction.LEFT, self.grid_x-self.step_size, self.grid_y, obstacles):
@@ -114,6 +119,11 @@ class Player(pg.sprite.Sprite):
                         self.grid_x += -self.step_size
                         self.anim_step += 1
                         self.scare_on_next = True
+                    case BlockType.CHECKPOINT:
+                        self.spawn_x = self.grid_x
+                        self.spawn_y = self.grid_y
+                        self.grid_x += -self.step_size
+                        self.anim_step += 1
                 self.dir = Direction.LEFT
             case Direction.DOWN:
                 match self.test_collision_masks(Direction.DOWN, self.grid_x+self.step_size, self.grid_y, obstacles):
@@ -131,6 +141,11 @@ class Player(pg.sprite.Sprite):
                         self.grid_y += self.step_size
                         self.anim_step += 1
                         self.scare_on_next = True
+                    case BlockType.CHECKPOINT:
+                        self.spawn_x = self.grid_x
+                        self.spawn_y = self.grid_y
+                        self.grid_y += self.step_size
+                        self.anim_step += 1
                 self.dir = Direction.DOWN
             case Direction.RIGHT:
                 match self.test_collision_masks(Direction.RIGHT, self.grid_x, self.grid_y+self.step_size, obstacles):
@@ -148,6 +163,11 @@ class Player(pg.sprite.Sprite):
                         self.grid_x += self.step_size
                         self.anim_step = (self.anim_step + 1)
                         self.scare_on_next = True
+                    case BlockType.CHECKPOINT:
+                        self.spawn_x = self.grid_x
+                        self.spawn_y = self.grid_y
+                        self.grid_x += self.step_size
+                        self.anim_step = (self.anim_step + 1)
                 self.dir = Direction.RIGHT
         self.image = self.images[self.dir][(self.anim_step//ANIM_SPEED) % 3]
 

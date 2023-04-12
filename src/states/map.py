@@ -46,6 +46,9 @@ def load_map(tm: tilemap.GameMap):
         if obj.name == 'scare_collide':
             _ = sprites.Block(obj.x, obj.y, obj.width,
                               obj.height, BlockType.SCARE)
+        if obj.name == 'checkpoint_collide':
+            _ = sprites.Block(obj.x, obj.y, obj.width, 
+                              obj.height, BlockType.CHECKPOINT)
         if obj.name == 'light':
             _ = sprites.Light(obj.x, obj.y, obj.width,
                               obj.height)

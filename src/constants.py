@@ -52,6 +52,7 @@ class BlockType(Enum):
     WIN = 2
     LIGHT = 3
     SCARE = 4
+    CHECKPOINT = 5
 
 
 MAP1_TEXT = [
