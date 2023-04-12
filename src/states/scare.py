@@ -20,6 +20,7 @@ class ScareScreen(GameState):
         pg.mixer.music.load(SCARE_ROAR_PATH)
         pg.mixer.music.set_volume(1)
         pg.mixer.music.play()
+        self.time_remaining = 2500
 
     def get_event(self, event):
         if event.type == pg.QUIT:
