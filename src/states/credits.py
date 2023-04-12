@@ -36,11 +36,11 @@ class CreditScreen(GameState):
         ]
         self.y_offset = 80
         self.scroll_speed = 0.5
-        self.font_size = 12
+        self.font_size = 10
         self.title = pg.transform.scale_by(
             pg.image.load(TITLE_SCREEN_PATH), 1.5)
         self.scotty = pg.transform.scale_by(
-            pg.image.load(SCOTTY_PATH), 2.75)
+            pg.image.load(SCOTTY_PATH), 2.6)
 
     def startup(self, persistent):
         self.persist = persistent
@@ -55,7 +55,7 @@ class CreditScreen(GameState):
 
     def update(self, dt):
         self.y_offset += self.scroll_speed
-        if self.y_offset > 1000:
+        if self.y_offset > 900:
             self.y_offset = 0
             self.done = True
             self.persist["deaths"] = 0
@@ -71,7 +71,7 @@ class CreditScreen(GameState):
         surf.blit(self.title, title_rect)
 
         scotty_rect = self.scotty.get_rect(center=(
-            GAME_WIDTH//2, 600 + GAME_HEIGHT - self.y_offset - (6 * self.title.get_height()//8)))
+            GAME_WIDTH//2, 550 + GAME_HEIGHT - self.y_offset - (6 * self.title.get_height()//8)))
         surf.blit(self.scotty, scotty_rect)
 
         for i, line in enumerate(self.credits_list):
