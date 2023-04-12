@@ -47,7 +47,7 @@ def load_map(tm: tilemap.GameMap):
             _ = sprites.Block(obj.x, obj.y, obj.width,
                               obj.height, BlockType.SCARE)
         if obj.name == 'checkpoint_collide':
-            _ = sprites.Block(obj.x, obj.y, obj.width, 
+            _ = sprites.Block(obj.x, obj.y, obj.width,
                               obj.height, BlockType.CHECKPOINT)
         if obj.name == 'light':
             _ = sprites.Light(obj.x, obj.y, obj.width,
@@ -308,6 +308,8 @@ class Map(GameState):
         surf.blit(lights, (0, 0), special_flags=pg.BLEND_RGBA_MULT)
         if self.map_num != 4:
             hud = self.render_hud()
+            if self.map_num == 3:
+                hud = pg.transform.flip(hud, False, True)
             surf.blit(hud, (0, 0))
 
         surf.blit(self.fader.draw(), (0, 0))
