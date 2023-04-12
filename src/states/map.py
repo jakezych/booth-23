@@ -126,7 +126,7 @@ class Map(GameState):
             if self.paused and event.key == pg.K_RSHIFT:  # restart
                 # save what the next state would have been to fix it in flip_state
                 self.persist["restarted"] = self.next_state
-                self.next_state = "HOSPITAL"
+                self.next_state = "SPLASH"
                 self.done = True
                 self.persist["deaths"] = 0
                 self.persist["timer"] = 0

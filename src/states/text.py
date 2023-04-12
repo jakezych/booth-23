@@ -29,6 +29,14 @@ class TextScreen(GameState):
     def startup(self, persistent):
         self.persist = persistent
         self.fader.activate(dir=Direction.IN, speed=3)
+        self.current_angle = 0
+        self.text = render_text("THE UPSIDE DOWN", self.font_size)
+        self.text_rect = self.text.get_rect(
+            center=(GAME_WIDTH//2, GAME_HEIGHT//2))
+        self.used_text = self.text
+        self.reflecting = False
+        self.time_remaining = 4000
+        self.total_time = 4000
 
     def get_event(self, event):
         if event.type == pg.QUIT:
