@@ -106,7 +106,7 @@ class Fader:
 
 
 class TextBox:
-    def __init__(self, messages, background_color=(0, 0, 0, 180), font_size=10, speed=75):
+    def __init__(self, messages, background_color=(0, 0, 0, 180), font_size=8, speed=75):
         self.background_color = background_color
         self.messages = messages
         self.current_message = 0
@@ -118,6 +118,8 @@ class TextBox:
         self.active = False
         self.text_box_image = pg.image.load(
             "resources/images/text_box_new.png").convert_alpha()
+        self.text_box_image = pg.transform.scale(
+            self.text_box_image, (GAME_WIDTH, GAME_HEIGHT//4))
         self.button_sprite = pg.image.load(
             "resources/sprites/a_button.png").convert_alpha()
         self.blink_timer = 0
@@ -164,6 +166,8 @@ class TextBox:
         temp_surface = pg.Surface((GAME_WIDTH, GAME_HEIGHT), pg.SRCALPHA)
         self.text_box_image = pg.image.load(
             "resources/images/text_box_new.png").convert_alpha()
+        self.text_box_image = pg.transform.scale(
+            self.text_box_image, (GAME_WIDTH, GAME_HEIGHT//4))
 
         message = self.messages[self.current_message][:self.current_character]
         words = message.split(' ')
@@ -178,7 +182,7 @@ class TextBox:
                 test_line, self.font_size, color=(255, 255, 255))
             test_width = test_surface.get_width()
 
-            if test_width > (320 - 40):  # available space in the textbox
+            if test_width > (288 - 40):  # available space in the textbox
                 lines.append(current_line.strip())
                 current_line = word + " "
                 accumulated_characters += len(current_line)
@@ -197,6 +201,7 @@ class TextBox:
         if self.paused and self.blink_timer < self.blink_frequency // 2:
             self.text_box_image.blit(self.button_sprite, (280, 54))
 
-        temp_surface.blit(self.text_box_image, (0, 220))
+        print(self.text_box_image.get_width())
+        temp_surface.blit(self.text_box_image, (0, 3 * GAME_HEIGHT//4))
 
         return temp_surface

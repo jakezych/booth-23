@@ -9,8 +9,8 @@ except:
     CONTROLLER = None
 FULLSCREEN = True
 
-GAME_WIDTH = 320
-GAME_HEIGHT = 320
+GAME_WIDTH = 256
+GAME_HEIGHT = 256
 
 WINDOW_CAPTION = 'Stranger Things ΦΔΘ'
 # Colors

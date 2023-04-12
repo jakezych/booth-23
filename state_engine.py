@@ -8,7 +8,7 @@ if __name__ == "__main__":
     INFO = pg.display.Info()
     if FULLSCREEN:
         screen = pg.display.set_mode(
-            (INFO.current_w, INFO.current_h-50), pg.FULLSCREEN)
+            (0, 0), pg.NOFRAME + pg.FULLSCREEN, 32, vsync=1)
     else:
         screen = pg.display.set_mode(
             (INFO.current_w, INFO.current_h-50))
